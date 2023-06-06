@@ -39,6 +39,7 @@ public class BaseSinkConfig {
     public static final String DEFAULT_TMP_PATH = "/tmp/seatunnel";
     public static final String DEFAULT_FILE_NAME_EXPRESSION = "${transactionId}";
     public static final int DEFAULT_BATCH_SIZE = 1000000;
+    public static final String DEFAULT_HADOOP_USER_NAME = "hadoop";
 
     public static final Option<CompressFormat> COMPRESS_CODEC =
             Options.key("compress_codec")
@@ -232,4 +233,10 @@ public class BaseSinkConfig {
                     .stringType()
                     .noDefaultValue()
                     .withDescription("To be written sheet name,only valid for excel files");
+
+    public static final Option<String> HADOOP_USER_NAME =
+        Options.key("hadoop_user_name")
+            .stringType()
+            .defaultValue(DEFAULT_HADOOP_USER_NAME)
+            .withDescription("hadoop user name");
 }
