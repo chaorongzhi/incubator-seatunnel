@@ -39,6 +39,7 @@ public class BaseSinkConfig {
     public static final String DEFAULT_TMP_PATH = "/tmp/seatunnel";
     public static final String DEFAULT_FILE_NAME_EXPRESSION = "${transactionId}";
     public static final int DEFAULT_BATCH_SIZE = 1000000;
+    public static final String DEFAULT_HADOOP_USER_NAME = "hadoop";
 
     public static final Option<CompressFormat> COMPRESS_CODEC =
             Options.key("compress_codec")
@@ -220,6 +221,11 @@ public class BaseSinkConfig {
                     .stringType()
                     .noDefaultValue()
                     .withDescription("Kerberos keytab file path");
+    public static final Option<String> HADOOP_USER_NAME =
+            Options.key("hadoop_user_name")
+                    .stringType()
+                    .defaultValue(DEFAULT_HADOOP_USER_NAME)
+                    .withDescription("hadoop user name");
 
     public static final Option<Integer> MAX_ROWS_IN_MEMORY =
             Options.key("max_rows_in_memory")
