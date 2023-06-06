@@ -96,8 +96,16 @@ public class FileSystemUtils implements Serializable {
         if (configuration == null) {
             configuration = getConfiguration(hadoopConf);
         }
-        FileSystem fileSystem =
-                FileSystem.get(URI.create(path.replaceAll("\\\\", "/")), configuration);
+        FileSystem fileSystem = null;
+        try {
+            fileSystem =
+                    FileSystem.get(
+                            URI.create(path.replaceAll("\\\\", "/")),
+                            configuration,
+                            hadoopConf.getHadoopUserName());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         fileSystem.setWriteChecksum(false);
         return fileSystem;
     }
