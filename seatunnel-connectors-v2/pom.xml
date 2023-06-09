@@ -33,7 +33,8 @@
         <module>connector-common</module>
         <!--        <module>connector-cdc</module>-->
         <!--        <module>connector-jdbc</module>-->
-        <module>connector-file</module>
+        <!--        <module>connector-file</module>-->
+        <module>connector-file/connector-file-hadoop</module>
         <module>connector-clickhouse</module>
     </modules>
 
