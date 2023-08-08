@@ -235,8 +235,8 @@ public class BaseSinkConfig {
                     .withDescription("To be written sheet name,only valid for excel files");
 
     public static final Option<String> HADOOP_USER_NAME =
-        Options.key("hadoop_user_name")
-            .stringType()
-            .defaultValue(DEFAULT_HADOOP_USER_NAME)
-            .withDescription("hadoop user name");
+            Options.key("hadoop_user_name")
+                    .stringType()
+                    .defaultValue(DEFAULT_HADOOP_USER_NAME)
+                    .withDescription("hadoop user name");
 }

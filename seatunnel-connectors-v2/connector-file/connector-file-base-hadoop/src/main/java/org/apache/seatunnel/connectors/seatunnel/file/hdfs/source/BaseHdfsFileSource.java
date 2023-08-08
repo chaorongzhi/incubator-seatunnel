@@ -63,7 +63,7 @@ public abstract class BaseHdfsFileSource extends BaseFileSource {
         hadoopConf = new HadoopConf(pluginConfig.getString(HdfsSourceConfig.DEFAULT_FS.key()));
         if (pluginConfig.hasPath(BaseSinkConfig.HADOOP_USER_NAME.key())) {
             hadoopConf.setHadoopUserName(
-                pluginConfig.getString(BaseSinkConfig.HADOOP_USER_NAME.key()));
+                    pluginConfig.getString(BaseSinkConfig.HADOOP_USER_NAME.key()));
         } else {
             hadoopConf.setHadoopUserName(BaseSinkConfig.HADOOP_USER_NAME.defaultValue());
         }
