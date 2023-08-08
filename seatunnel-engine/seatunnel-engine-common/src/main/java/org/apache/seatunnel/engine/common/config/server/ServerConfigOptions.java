@@ -49,7 +49,7 @@ public class ServerConfigOptions {
     public static final Option<Integer> JOB_METRICS_BACKUP_INTERVAL =
             Options.key("job-metrics-backup-interval")
                     .intType()
-                    .defaultValue(60)
+                    .defaultValue(10)
                     .withDescription("The interval (in seconds) of job metrics backups");
 
     public static final Option<ThreadShareMode> TASK_EXECUTION_THREAD_SHARE_MODE =
@@ -84,6 +84,13 @@ public class ServerConfigOptions {
                     .intType()
                     .defaultValue(30000)
                     .withDescription("The timeout (in milliseconds) for a checkpoint.");
+
+    public static final Option<Integer> SCHEMA_CHANGE_CHECKPOINT_TIMEOUT =
+            Options.key("schema-change-timeout")
+                    .intType()
+                    .defaultValue(30000)
+                    .withDescription(
+                            "The timeout (in milliseconds) for a schema change checkpoint.");
 
     public static final Option<Integer> CHECKPOINT_MAX_CONCURRENT =
             Options.key("max-concurrent")

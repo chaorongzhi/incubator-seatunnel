@@ -26,8 +26,6 @@ import java.util.Map;
 public class Config {
 
     public static final String CONNECTOR_IDENTITY = "Kafka";
-    public static final String REPLICATION_FACTOR = "replication.factor";
-
     /** The default field delimiter is “,” */
     public static final String DEFAULT_FIELD_DELIMITER = ",";
 
@@ -99,6 +97,12 @@ public class Config {
                             "Data format. The default format is json. Optional text format. The default field separator is \", \". "
                                     + "If you customize the delimiter, add the \"field_delimiter\" option.");
 
+    public static final Option<Boolean> DEBEZIUM_RECORD_INCLUDE_SCHEMA =
+            Options.key("debezium_record_include_schema")
+                    .booleanType()
+                    .defaultValue(true)
+                    .withDescription("Does the debezium record carry a schema.");
+
     public static final Option<String> FIELD_DELIMITER =
             Options.key("field_delimiter")
                     .stringType()
@@ -155,4 +159,20 @@ public class Config {
                     .defaultValue(-1L)
                     .withDescription(
                             "The interval for dynamically discovering topics and partitions.");
+
+    public static final Option<MessageFormatErrorHandleWay> MESSAGE_FORMAT_ERROR_HANDLE_WAY_OPTION =
+            Options.key("format_error_handle_way")
+                    .enumType(MessageFormatErrorHandleWay.class)
+                    .defaultValue(MessageFormatErrorHandleWay.FAIL)
+                    .withDescription(
+                            "The processing method of data format error. The default value is fail, and the optional value is (fail, skip). "
+                                    + "When fail is selected, data format error will block and an exception will be thrown. "
+                                    + "When skip is selected, data format error will skip this line data.");
+
+    public static final Option<KafkaSemantics> SEMANTICS =
+            Options.key("semantics")
+                    .enumType(KafkaSemantics.class)
+                    .defaultValue(KafkaSemantics.NON)
+                    .withDescription(
+                            "Semantics that can be chosen EXACTLY_ONCE/AT_LEAST_ONCE/NON, default NON.");
 }
