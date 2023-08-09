@@ -102,13 +102,15 @@ public class RestHttpPostCommandProcessor extends HttpCommandProcessor<HttpPostC
         Config config = RestUtil.buildConfig(requestBodyJsonNode);
         JobConfig jobConfig = new JobConfig();
         jobConfig.setName(requestParams.get("jobName"));
+        Boolean isStartWithSavePoint =
+                Boolean.parseBoolean(requestParams.get("isStartWithSavePoint"));
         JobImmutableInformationEnv jobImmutableInformationEnv =
                 new JobImmutableInformationEnv(
                         jobConfig,
                         config,
                         textCommandService.getNode(),
-                        Boolean.parseBoolean(requestParams.get("isStartWithSavePoint")),
-                        Long.parseLong(requestParams.get("jobId")));
+                        isStartWithSavePoint,
+                        isStartWithSavePoint ? Long.parseLong(requestParams.get("jobId")) : null);
         JobImmutableInformation jobImmutableInformation = jobImmutableInformationEnv.build();
         CoordinatorService coordinatorService = getSeaTunnelServer().getCoordinatorService();
         Data data =
