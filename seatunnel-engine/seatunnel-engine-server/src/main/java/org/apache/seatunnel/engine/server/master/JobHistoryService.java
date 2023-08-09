@@ -169,14 +169,14 @@ public class JobHistoryService {
         JobState jobState = toJobStateMapper(jobMaster, false);
         jobState.setFinishTime(System.currentTimeMillis());
         jobState.setErrorMessage(jobMaster.getErrorMessage());
-        finishedJobStateImap.put(jobState.jobId, jobState, 14, TimeUnit.DAYS);
+        finishedJobStateImap.put(jobState.jobId, jobState, 4, TimeUnit.HOURS);
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
     public void storeFinishedPipelineMetrics(long jobId, JobMetrics metrics) {
         finishedJobMetricsImap.computeIfAbsent(jobId, key -> JobMetrics.of(new HashMap<>()));
         JobMetrics newMetrics = finishedJobMetricsImap.get(jobId).merge(metrics);
-        finishedJobMetricsImap.put(jobId, newMetrics, 14, TimeUnit.DAYS);
+        finishedJobMetricsImap.put(jobId, newMetrics, 4, TimeUnit.HOURS);
     }
 
     private JobState toJobStateMapper(JobMaster jobMaster, boolean simple) {
