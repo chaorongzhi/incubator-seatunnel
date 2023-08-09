@@ -37,7 +37,8 @@
         <!--        <module>connector-fake</module>-->
         <!--        <module>connector-http</module>-->
         <module>connector-jdbc</module>
-        <module>connector-kafka</module>
+        <!--        <module>connector-kafka</module>-->
+        <module>connector-kafka-hw</module>
         <!--        <module>connector-pulsar</module>-->
         <!--        <module>connector-socket</module>-->
         <!--        <module>connector-hive</module>-->
@@ -47,7 +48,8 @@
         <!--        <module>connector-kudu</module>-->
         <!--        <module>connector-email</module>-->
         <!--        <module>connector-dingtalk</module>-->
-        <module>connector-elasticsearch</module>
+        <!--        <module>connector-elasticsearch</module>-->
+        <module>connector-elasticsearch-hw</module>
         <!--        <module>connector-iotdb</module>-->
         <!--        <module>connector-neo4j</module>-->
         <!--        <module>connector-redis</module>-->
