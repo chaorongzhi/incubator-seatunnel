@@ -76,6 +76,7 @@ public class JobHistoryService {
      * finishedJobStateImap key is jobId and value is jobState(json) JobStateData Indicates the
      * status of the job, pipeline, and task
      */
+    // TODO need to limit the amount of storage
     private final IMap<Long, JobState> finishedJobStateImap;
 
     private final IMap<Long, JobMetrics> finishedJobMetricsImap;
@@ -237,7 +238,7 @@ public class JobHistoryService {
     }
 
     public void storeJobInfo(long jobId, JobDAGInfo jobInfo) {
-        finishedJobDAGInfoImap.put(jobId, jobInfo, finishedJobExpireTime, TimeUnit.MINUTES);
+        finishedJobDAGInfoImap.put(jobId, jobInfo);
     }
 
     @AllArgsConstructor
