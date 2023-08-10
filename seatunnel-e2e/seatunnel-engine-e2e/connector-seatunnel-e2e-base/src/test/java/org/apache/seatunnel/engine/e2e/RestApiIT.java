@@ -17,8 +17,11 @@
 
 package org.apache.seatunnel.engine.e2e;
 
+import org.apache.seatunnel.shade.com.typesafe.config.ConfigRenderOptions;
+
 import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.config.DeployMode;
+import org.apache.seatunnel.core.starter.utils.ConfigBuilder;
 import org.apache.seatunnel.engine.client.SeaTunnelClient;
 import org.apache.seatunnel.engine.client.job.ClientJobProxy;
 import org.apache.seatunnel.engine.client.job.JobExecutionEnvironment;
@@ -167,6 +170,50 @@ public class RestApiIT {
         String parameters = "jobId=1&jobName=test&isStartWithSavePoint=false";
         // Only jobName is compared because jobId is randomly generated if isStartWithSavePoint is
         // false
+        Response response =
+                given().body(requestBody)
+                        .post(
+                                HOST
+                                        + hazelcastInstance
+                                                .getCluster()
+                                                .getLocalMember()
+                                                .getAddress()
+                                                .getPort()
+                                        + RestConstant.SUBMIT_JOB_URL
+                                        + "?"
+                                        + parameters);
+
+        response.then().statusCode(200).body("jobName", equalTo("test"));
+        String jobId = response.getBody().jsonPath().getString("jobId");
+        SeaTunnelServer seaTunnelServer =
+                (SeaTunnelServer)
+                        hazelcastInstance
+                                .node
+                                .getNodeExtension()
+                                .createExtensionServices()
+                                .get(Constant.SEATUNNEL_SERVICE_NAME);
+        JobStatus jobStatus =
+                seaTunnelServer.getCoordinatorService().getJobStatus(Long.parseLong(jobId));
+        Assertions.assertEquals(JobStatus.RUNNING, jobStatus);
+        Awaitility.await()
+                .atMost(2, TimeUnit.MINUTES)
+                .untilAsserted(
+                        () ->
+                                Assertions.assertEquals(
+                                        JobStatus.FINISHED,
+                                        seaTunnelServer
+                                                .getCoordinatorService()
+                                                .getJobStatus(Long.parseLong(jobId))));
+    }
+
+    @Test
+    public void testSubmitJobWithoutJobId() {
+        String requestBody =
+                ConfigBuilder.of(TestUtils.getResource("batch_fakesource_to_file.conf"))
+                        .root()
+                        .render(ConfigRenderOptions.concise().setFormatted(true));
+        String parameters = "jobName=test&isStartWithSavePoint=false";
+        // jobName is null and isStartWithSavePoint is false
         Response response =
                 given().body(requestBody)
                         .post(
