@@ -23,6 +23,7 @@ public class RestConstant {
     public static final String RUNNING_JOB_URL = "/hazelcast/rest/maps/running-job";
     public static final String SUBMIT_JOB_URL = "/hazelcast/rest/maps/submit-job";
     public static final String CANCEL_JOB_URL = "/hazelcast/rest/maps/cancel-job";
+    public static final String GET_JOB_STATUS_URL = "/hazelcast/rest/maps/get-job-status";
 
     public static final String SYSTEM_MONITORING_INFORMATION =
             "/hazelcast/rest/maps/system-monitoring-information";
