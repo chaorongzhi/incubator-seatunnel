@@ -23,14 +23,17 @@ import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.seatunnel.engine.common.Constant;
 import org.apache.seatunnel.engine.common.loader.SeaTunnelChildFirstClassLoader;
+import org.apache.seatunnel.engine.common.utils.PassiveCompletableFuture;
 import org.apache.seatunnel.engine.core.dag.logical.LogicalDag;
 import org.apache.seatunnel.engine.core.job.JobImmutableInformation;
 import org.apache.seatunnel.engine.core.job.JobInfo;
 import org.apache.seatunnel.engine.core.job.JobStatus;
+import org.apache.seatunnel.engine.server.CoordinatorService;
 import org.apache.seatunnel.engine.server.SeaTunnelServer;
 import org.apache.seatunnel.engine.server.log.Log4j2HttpGetCommandProcessor;
 import org.apache.seatunnel.engine.server.operation.GetClusterHealthMetricsOperation;
 import org.apache.seatunnel.engine.server.utils.NodeEngineUtil;
+import org.apache.seatunnel.engine.server.utils.RestUtil;
 
 import com.hazelcast.cluster.Address;
 import com.hazelcast.cluster.Cluster;
@@ -56,6 +59,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import static com.hazelcast.internal.ascii.rest.HttpStatusCode.SC_500;
+import static org.apache.seatunnel.engine.server.rest.RestConstant.CANCEL_JOB_URL;
 import static org.apache.seatunnel.engine.server.rest.RestConstant.RUNNING_JOBS_URL;
 import static org.apache.seatunnel.engine.server.rest.RestConstant.RUNNING_JOB_URL;
 import static org.apache.seatunnel.engine.server.rest.RestConstant.SYSTEM_MONITORING_INFORMATION;
@@ -93,6 +97,8 @@ public class RestHttpGetCommandProcessor extends HttpCommandProcessor<HttpGetCom
                 handleJobInfoById(httpGetCommand, uri);
             } else if (uri.startsWith(SYSTEM_MONITORING_INFORMATION)) {
                 getSystemMonitoringInformation(httpGetCommand);
+            } else if (uri.startsWith(CANCEL_JOB_URL)) {
+                cancelJobById(httpGetCommand, uri);
             } else {
                 original.handle(httpGetCommand);
             }
@@ -184,6 +190,26 @@ public class RestHttpGetCommandProcessor extends HttpCommandProcessor<HttpGetCom
         } else {
             this.prepareResponse(command, new JsonObject());
         }
+    }
+
+    private void cancelJobById(HttpGetCommand command, String uri) {
+        uri = StringUtil.stripTrailingSlash(uri);
+        Map<String, String> requestParams = new HashMap<>();
+        RestUtil.buildRequestParams(requestParams, uri);
+        Long jobId = Long.valueOf(Long.parseLong(requestParams.get("jobId")));
+        Boolean isStopWithSavePoint =
+                Boolean.valueOf(Boolean.parseBoolean(requestParams.get("isStopWithSavePoint")));
+        CoordinatorService coordinatorService = getSeaTunnelServer().getCoordinatorService();
+        PassiveCompletableFuture<Void> voidPassiveCompletableFuture = null;
+        if (isStopWithSavePoint.booleanValue()) {
+            voidPassiveCompletableFuture = coordinatorService.savePoint(jobId.longValue());
+        } else {
+            voidPassiveCompletableFuture = coordinatorService.cancelJob(jobId.longValue());
+        }
+        voidPassiveCompletableFuture.join();
+        Map<String, String> rst = new HashMap<>();
+        rst.put("msg", "success");
+        prepareResponse(command, JsonUtil.toJsonObject(rst));
     }
 
     private Map<String, Long> getJobMetrics(String jobMetrics) {
