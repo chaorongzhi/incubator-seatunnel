@@ -19,6 +19,7 @@ package org.apache.seatunnel.engine.core.job;
 
 import org.apache.seatunnel.api.env.EnvCommonOptions;
 import org.apache.seatunnel.common.config.Common;
+import org.apache.seatunnel.common.config.DeployMode;
 import org.apache.seatunnel.common.utils.FileUtils;
 import org.apache.seatunnel.engine.common.config.JobConfig;
 import org.apache.seatunnel.engine.common.exception.SeaTunnelEngineException;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -89,6 +91,9 @@ public abstract class AbstractJobEnvironment {
 
     protected Set<URL> searchPluginJars() {
         try {
+            if (Objects.isNull(Common.getDeployMode())) {
+                Common.setDeployMode(DeployMode.CLIENT);
+            }
             if (Files.exists(Common.pluginRootDir())) {
                 return new HashSet<>(FileUtils.searchJarFiles(Common.pluginRootDir()));
             }
