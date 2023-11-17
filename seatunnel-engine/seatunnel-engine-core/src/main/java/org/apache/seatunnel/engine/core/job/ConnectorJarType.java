@@ -15,18 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.connectors.seatunnel.kudu.source;
+package org.apache.seatunnel.engine.core.job;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.io.Serializable;
-
-@Data
-@AllArgsConstructor
-public class PartitionParameter implements Serializable {
-
-    String partitionColumnName;
-    Long minValue;
-    Long maxValue;
+/** Connector jar package type, i.e. COMMON_PLUGIN_JAR or CONNECTOR_PLUGIN_JAR. */
+public enum ConnectorJarType {
+    /** Indicates a third-party Jar package that the corresponding connector plugin depends on. */
+    COMMON_PLUGIN_JAR,
+    /** Indicates a connector Jar package. */
+    CONNECTOR_PLUGIN_JAR;
 }
