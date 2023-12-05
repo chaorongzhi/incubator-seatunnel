@@ -48,7 +48,7 @@
         <hikari.version>4.0.3</hikari.version>
         <postgis.jdbc.version>2.5.1</postgis.jdbc.version>
         <kingbase8.version>8.6.0</kingbase8.version>
-        <hive.jdbc.version>3.1.3</hive.jdbc.version>
+        <hive.jdbc.version>3.1.0</hive.jdbc.version>
         <oceanbase.jdbc.version>2.4.3</oceanbase.jdbc.version>
     </properties>
 
@@ -188,10 +188,44 @@
                 <version>${oceanbase.jdbc.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <!--            <dependency>-->
+            <!--                <groupId>org.apache.zookeeper</groupId>-->
+            <!--                <artifactId>zookeeper</artifactId>-->
+            <!--                <version>3.5.1-mrs-2.1</version>-->
+            <!--                <exclusions>-->
+            <!--                    <exclusion>-->
+            <!--                        <groupId>io.netty</groupId>-->
+            <!--                        <artifactId>netty-all</artifactId>-->
+            <!--                    </exclusion>-->
+            <!--                    <exclusion>-->
+            <!--                        <groupId>io.netty</groupId>-->
+            <!--                        <artifactId>netty</artifactId>-->
+            <!--                    </exclusion>-->
+            <!--                    <exclusion>-->
+            <!--                        <groupId>org.slf4j</groupId>-->
+            <!--                        <artifactId>slf4j-log4j12</artifactId>-->
+            <!--                    </exclusion>-->
+            <!--                </exclusions>-->
+            <!--            </dependency>-->
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-auth</artifactId>
+                <version>3.1.1-mrs-2.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-auth</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.seatunnel</groupId>
@@ -291,4 +325,17 @@
             <artifactId>oceanbase-client</artifactId>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>huaweicloudsdk</id>
+            <url>https://mirrors.huaweicloud.com/repository/maven/huaweicloudsdk/</url>
+        </repository>
+    </repositories>
 </project>

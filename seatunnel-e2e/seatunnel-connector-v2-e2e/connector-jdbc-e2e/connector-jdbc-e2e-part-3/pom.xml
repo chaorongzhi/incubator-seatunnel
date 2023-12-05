@@ -98,4 +98,17 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>huaweicloudsdk</id>
+            <url>https://mirrors.huaweicloud.com/repository/maven/huaweicloudsdk/</url>
+        </repository>
+    </repositories>
+
 </project>
