@@ -200,17 +200,6 @@ public class LoginUtil {
             if (entrys[i].getOptions().get("principal").equals(principal)) {
                 checkPrincipal = true;
             }
-
-            //            if (IS_IBM_JDK) {
-            //                if (entrys[i].getOptions().get("useKeytab").equals(keytabFile)) {
-            //                    checkKeytab = true;
-            //                }
-            //            } else {
-            //                if (entrys[i].getOptions().get("keyTab").equals(keytabFile)) {
-            //                    checkKeytab = true;
-            //                }
-            //            }
-
         }
 
         if (!checkPrincipal) {

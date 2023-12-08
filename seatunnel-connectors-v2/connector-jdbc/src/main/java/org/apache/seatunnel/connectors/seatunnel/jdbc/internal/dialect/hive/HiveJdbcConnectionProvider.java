@@ -34,11 +34,20 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Properties;
 
 import static org.apache.seatunnel.connectors.seatunnel.jdbc.exception.JdbcConnectorErrorCode.KERBEROS_AUTHENTICATION_FAILED;
 
 public class HiveJdbcConnectionProvider extends SimpleJdbcConnectionProvider {
+    private static final String HADOOP_SECURITY_AUTHENTICATION = "hadoop.security.authentication";
+    private static final String DEFAULT_HADOOP_AUTH = "kerberos";
+    private static final String KRB5_CONF_PATH = "java.security.krb5.conf";
+
+    private static final String ZOOKEEPER_SASL_CLIENT_CONFIG = "zookeeper_sasl_client_config";
+    private static final String DEFAULT_ZOOKEEPER_SASL_CLIENT_CONFIG = "Client";
+    private static final String ZOOKEEPER_SERVER_PRINCIPAL = "zookeeper_server_principal";
+    private static final String ZOOKEEPER_NAMESPACE = "zookeeper_namespace";
 
     public HiveJdbcConnectionProvider(@NonNull JdbcConnectionConfig jdbcConfig) {
         super(jdbcConfig);
@@ -51,16 +60,28 @@ public class HiveJdbcConnectionProvider extends SimpleJdbcConnectionProvider {
         }
         JdbcConnectionConfig jdbcConfig = super.getJdbcConfig();
         if (jdbcConfig.useKerberos) {
-            System.setProperty("java.security.krb5.conf", jdbcConfig.krb5Path);
+            System.setProperty(KRB5_CONF_PATH, jdbcConfig.krb5Path);
             Configuration configuration = new Configuration();
-            configuration.set("hadoop.security.authentication", "kerberos");
+            configuration.set(
+                    HADOOP_SECURITY_AUTHENTICATION,
+                    jdbcConfig
+                            .getProperties()
+                            .getOrDefault(HADOOP_SECURITY_AUTHENTICATION, DEFAULT_HADOOP_AUTH));
             configuration.set(CommonConfigurationKeysPublic.HADOOP_SECURITY_AUTHORIZATION, "true");
 
+            Map<String, String> authInfo = jdbcConfig.getProperties();
+            String zookeeperSaslClientConfig =
+                    authInfo.getOrDefault(
+                            ZOOKEEPER_SASL_CLIENT_CONFIG, DEFAULT_ZOOKEEPER_SASL_CLIENT_CONFIG);
+            String zookeeperServerPrincipal = authInfo.get(ZOOKEEPER_SERVER_PRINCIPAL);
+            String zookeeperNamespace = authInfo.get(ZOOKEEPER_NAMESPACE);
             try {
-                if (StringUtils.isNotBlank("hiveserver2")) {
+                if (StringUtils.isNotBlank(zookeeperNamespace)) {
                     LoginUtil.setJaasConf(
-                            "Client", "hiveuser@HADOOP.COM", jdbcConfig.kerberosKeytabPath);
-                    LoginUtil.setZookeeperServerPrincipal("zookeeper/hadoop.hadoop.com");
+                            zookeeperSaslClientConfig,
+                            jdbcConfig.kerberosPrincipal,
+                            jdbcConfig.kerberosKeytabPath);
+                    LoginUtil.setZookeeperServerPrincipal(zookeeperServerPrincipal);
                 }
                 UserGroupInformation.setConfiguration(configuration);
                 UserGroupInformation.loginUserFromKeytab(
