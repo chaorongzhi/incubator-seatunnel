@@ -40,4 +40,5 @@ public class ConsumerMetadata implements Serializable {
     private StartMode startMode = StartMode.GROUP_OFFSETS;
     private Map<TopicPartition, Long> specificStartOffsets;
     private Long startOffsetsTimestamp;
+    private String krb5Path;
 }

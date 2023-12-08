@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class Config {
 
-    public static final String CONNECTOR_IDENTITY = "Kafka";
+    public static final String CONNECTOR_IDENTITY = "Kafka-hw";
     /** The default field delimiter is “,” */
     public static final String DEFAULT_FIELD_DELIMITER = ",";
 
@@ -182,6 +182,5 @@ public class Config {
             Options.key("krb5_conf_path")
                     .stringType()
                     .defaultValue("")
-                    .withDescription(
-                            "Semantics that can be chosen EXACTLY_ONCE/AT_LEAST_ONCE/NON, default NON.");
+                    .withDescription("krb5 conf path");
 }

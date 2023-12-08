@@ -64,6 +64,7 @@ import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.F
 import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.FORMAT;
 import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.KAFKA_CONFIG;
 import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.KEY_PARTITION_DISCOVERY_INTERVAL_MILLIS;
+import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.KRB5_CONF_PATH;
 import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.MESSAGE_FORMAT_ERROR_HANDLE_WAY_OPTION;
 import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.PATTERN;
 import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.START_MODE;
@@ -160,6 +161,10 @@ public class KafkaSourceConfig implements Serializable {
                                         (key, value) ->
                                                 consumerMetadata.getProperties().put(key, value)));
 
+        consumerMetadata.setKrb5Path(
+                readonlyConfig.get(KRB5_CONF_PATH) == null
+                        ? ""
+                        : readonlyConfig.get(KRB5_CONF_PATH));
         return consumerMetadata;
     }
 

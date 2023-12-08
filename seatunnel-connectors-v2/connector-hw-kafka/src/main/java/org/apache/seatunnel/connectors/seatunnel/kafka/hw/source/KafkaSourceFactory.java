@@ -52,7 +52,8 @@ public class KafkaSourceFactory implements TableSourceFactory {
                         Config.SCHEMA,
                         Config.FORMAT,
                         Config.DEBEZIUM_RECORD_INCLUDE_SCHEMA,
-                        Config.KEY_PARTITION_DISCOVERY_INTERVAL_MILLIS)
+                        Config.KEY_PARTITION_DISCOVERY_INTERVAL_MILLIS,
+                        Config.KRB5_CONF_PATH)
                 .conditional(Config.START_MODE, StartMode.TIMESTAMP, Config.START_MODE_TIMESTAMP)
                 .conditional(
                         Config.START_MODE, StartMode.SPECIFIC_OFFSETS, Config.START_MODE_OFFSETS)

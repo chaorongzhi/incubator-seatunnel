@@ -37,6 +37,8 @@ public class KafkaConsumerThread implements Runnable {
 
     private final LinkedBlockingQueue<Consumer<KafkaConsumer<byte[], byte[]>>> tasks;
 
+    private static final String KRB5_PATH = "java.security.krb5.conf";
+
     public KafkaConsumerThread(ConsumerMetadata metadata) {
         this.metadata = metadata;
         this.tasks = new LinkedBlockingQueue<>();
@@ -45,7 +47,8 @@ public class KafkaConsumerThread implements Runnable {
                         this.metadata.getBootstrapServers(),
                         this.metadata.getConsumerGroup(),
                         this.metadata.getProperties(),
-                        !this.metadata.isCommitOnCheckpoint());
+                        !this.metadata.isCommitOnCheckpoint(),
+                        this.metadata.getKrb5Path());
     }
 
     @Override
@@ -79,7 +82,8 @@ public class KafkaConsumerThread implements Runnable {
             String bootstrapServer,
             String consumerGroup,
             Properties properties,
-            boolean autoCommit) {
+            boolean autoCommit,
+            String krb5Path) {
         Properties props = new Properties();
         properties.forEach(
                 (key, value) -> props.setProperty(String.valueOf(key), String.valueOf(value)));
@@ -104,6 +108,7 @@ public class KafkaConsumerThread implements Runnable {
 
         // Disable auto create topics feature
         //        props.setProperty(ConsumerConfig.ALLOW_AUTO_CREATE_TOPICS_CONFIG, "false");
+        System.setProperty(KRB5_PATH, krb5Path);
         return new KafkaConsumer<>(props);
     }
 }
