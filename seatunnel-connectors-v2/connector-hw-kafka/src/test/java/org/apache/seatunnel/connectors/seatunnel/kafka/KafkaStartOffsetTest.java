@@ -17,21 +17,8 @@
 
 package org.apache.seatunnel.connectors.seatunnel.kafka;
 
-import org.apache.seatunnel.connectors.seatunnel.kafka.hw.sink.KafkaNoTransactionSender;
-
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.config.SaslConfigs;
-import org.apache.kafka.common.serialization.StringSerializer;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.Properties;
 
 public class KafkaStartOffsetTest {
 

@@ -33,7 +33,7 @@ public class ElasticSearchCatalogFactory implements CatalogFactory {
     @Override
     public String factoryIdentifier() {
         // todo:
-        return "Elasticsearch";
+        return "Elasticsearch-hw";
     }
 
     @Override

@@ -25,15 +25,20 @@ import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig;
+import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.HwEsAuthConfig;
 import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.dto.BulkResponse;
 import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.dto.ElasticsearchClusterInfo;
 import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.dto.source.IndexDocsCount;
 import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.dto.source.ScrollResult;
 import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.exception.ElasticsearchConnectorErrorCode;
 import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.exception.ElasticsearchConnectorException;
+import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.util.LoginUtil;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.util.Asserts;
 import org.apache.http.util.EntityUtils;
 
@@ -41,7 +46,6 @@ import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
-import org.elasticsearch.hwclient.HwRestClient;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -70,37 +74,73 @@ public class EsRestClient {
 
     public static EsRestClient createInstance(Config pluginConfig) {
         List<String> hosts = pluginConfig.getStringList(EsClusterConnectionConfig.HOSTS.key());
-        Optional<String> username = Optional.empty();
-        Optional<String> password = Optional.empty();
-        if (pluginConfig.hasPath(EsClusterConnectionConfig.USERNAME.key())) {
-            username =
-                    Optional.of(pluginConfig.getString(EsClusterConnectionConfig.USERNAME.key()));
-            if (pluginConfig.hasPath(EsClusterConnectionConfig.PASSWORD.key())) {
-                password =
-                        Optional.of(
-                                pluginConfig.getString(EsClusterConnectionConfig.PASSWORD.key()));
-            }
-        }
 
-        return createInstance(hosts, username, password);
+        Config hwEsAuth = pluginConfig.getConfig(EsClusterConnectionConfig.HW_ES_AUTH_CONFIG.key());
+        HwEsAuthConfig hwEsAuthConfig = new HwEsAuthConfig(hwEsAuth);
+        return createInstance(hosts, hwEsAuthConfig);
     }
 
-    public static EsRestClient createInstance(
-            List<String> hosts, Optional<String> username, Optional<String> password) {
-        RestClientBuilder restClientBuilder = getRestClientBuilder(hosts, username, password);
+    public static EsRestClient createInstance(List<String> hosts, HwEsAuthConfig hwEsAuthConfig) {
+        RestClientBuilder restClientBuilder = getRestClientBuilder(hosts, hwEsAuthConfig);
         return new EsRestClient(restClientBuilder.build());
     }
 
     private static RestClientBuilder getRestClientBuilder(
-            List<String> hosts, Optional<String> username, Optional<String> password) {
-        //        HttpHost[] httpHosts = new HttpHost[hosts.size()];
-        //        for (int i = 0; i < hosts.size(); i++) {
-        //            httpHosts[i] = HttpHost.create(hosts.get(i));
-        //        }
+            List<String> hosts, HwEsAuthConfig hwEsAuthConfig) {
+        HttpHost[] httpHosts = getHostArray(hosts, hwEsAuthConfig.getIsSecureMode());
 
-        String config =
-                "D:\\code\\seatunnel-dev\\incubator-seatunnel\\seatunnel-connectors-v2\\connector-elasticsearch-hw\\src\\main\\resources\\conf\\";
-        return new HwRestClient(config).getRestClientBuilder();
+        if ("false".equals(hwEsAuthConfig.getIsSecureMode())) {
+            System.setProperty("es.security.indication", "false");
+        } else {
+            try {
+                LoginUtil.setJaasFile(
+                        hwEsAuthConfig.getPrincipal(),
+                        hwEsAuthConfig.getKeytab(),
+                        hwEsAuthConfig.getCustomJaasPath());
+                LoginUtil.setKrb5Config(hwEsAuthConfig.getKrb5Path());
+                System.setProperty("elasticsearch.kerberos.jaas.appname", "EsClient");
+                System.setProperty("es.security.indication", "true");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        RestClientBuilder builder = RestClient.builder(httpHosts);
+        Header[] defaultHeaders =
+                new Header[] {
+                    new BasicHeader("Accept", "application/json"),
+                    new BasicHeader("Content-type", "application/json")
+                };
+        builder.setRequestConfigCallback(
+                        requestConfigBuilder ->
+                                requestConfigBuilder
+                                        .setConnectTimeout(hwEsAuthConfig.getConnectTimeout())
+                                        .setSocketTimeout(hwEsAuthConfig.getSocketTimeout())
+                                        .setConnectionRequestTimeout(
+                                                hwEsAuthConfig.getConnectionRequestTimeout()))
+                .setMaxConnPerRoute(hwEsAuthConfig.getMaxConnPerRoute())
+                .setMaxConnTotal(hwEsAuthConfig.getMaxConnTotal());
+        builder.setDefaultHeaders(defaultHeaders);
+        return builder;
+    }
+
+    private static HttpHost[] getHostArray(List<String> hostsStr, String isSecureMode) {
+        String schema;
+        if ("false".equals(isSecureMode)) {
+            schema = "http";
+        } else {
+            schema = "https";
+        }
+
+        List<HttpHost> hosts = new ArrayList<>();
+
+        for (String host : hostsStr) {
+            String[] hostInfo = host.split(":");
+            HttpHost hostNew = new HttpHost(hostInfo[0], Integer.parseInt(hostInfo[1]), schema);
+            hosts.add(hostNew);
+        }
+
+        return hosts.toArray(new HttpHost[0]);
     }
 
     public BulkResponse bulk(String requestBody) {

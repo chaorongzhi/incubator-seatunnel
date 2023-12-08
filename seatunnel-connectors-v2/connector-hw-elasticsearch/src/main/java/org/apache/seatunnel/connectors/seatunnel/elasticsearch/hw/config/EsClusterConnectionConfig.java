@@ -21,6 +21,7 @@ import org.apache.seatunnel.api.configuration.Option;
 import org.apache.seatunnel.api.configuration.Options;
 
 import java.util.List;
+import java.util.Map;
 
 public class EsClusterConnectionConfig {
 
@@ -80,4 +81,10 @@ public class EsClusterConnectionConfig {
                     .stringType()
                     .noDefaultValue()
                     .withDescription("The key password for the trust store specified");
+
+    public static final Option<Map<String, String>> HW_ES_AUTH_CONFIG =
+            Options.key("hw_es_auth_config")
+                    .mapType()
+                    .noDefaultValue()
+                    .withDescription("huawei could es auth config");
 }

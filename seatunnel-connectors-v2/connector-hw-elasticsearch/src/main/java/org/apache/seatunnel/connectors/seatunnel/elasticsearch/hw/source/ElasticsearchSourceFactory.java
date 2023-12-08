@@ -49,7 +49,8 @@ public class ElasticsearchSourceFactory implements TableSourceFactory {
                         EsClusterConnectionConfig.TLS_KEY_STORE_PATH,
                         EsClusterConnectionConfig.TLS_KEY_STORE_PASSWORD,
                         EsClusterConnectionConfig.TLS_TRUST_STORE_PATH,
-                        EsClusterConnectionConfig.TLS_TRUST_STORE_PASSWORD)
+                        EsClusterConnectionConfig.TLS_TRUST_STORE_PASSWORD,
+                        EsClusterConnectionConfig.HW_ES_AUTH_CONFIG)
                 .exclusive(SourceConfig.SOURCE, TableSchemaOptions.SCHEMA)
                 .build();
     }
