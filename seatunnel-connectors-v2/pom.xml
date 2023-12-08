@@ -32,13 +32,13 @@
     <modules>
         <module>connector-common</module>
         <!--        <module>connector-cdc</module>-->
-        <!--        <module>connector-clickhouse</module>-->
+        <module>connector-clickhouse</module>
         <!--        <module>connector-console</module>-->
         <!--        <module>connector-fake</module>-->
         <!--        <module>connector-http</module>-->
         <module>connector-jdbc</module>
-        <!--        <module>connector-kafka</module>-->
-        <module>connector-kafka-hw</module>
+        <module>connector-kafka</module>
+        <module>connector-hw-kafka</module>
         <!--        <module>connector-pulsar</module>-->
         <!--        <module>connector-socket</module>-->
         <!--        <module>connector-hive</module>-->
@@ -49,7 +49,7 @@
         <!--        <module>connector-email</module>-->
         <!--        <module>connector-dingtalk</module>-->
         <!--        <module>connector-elasticsearch</module>-->
-        <module>connector-elasticsearch-hw</module>
+        <module>connector-hw-elasticsearch</module>
         <!--        <module>connector-iotdb</module>-->
         <!--        <module>connector-neo4j</module>-->
         <!--        <module>connector-redis</module>-->

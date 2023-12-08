@@ -14,14 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.seatunnel.connectors.seatunnel.jdbc.internal.dialect.hive;
 
 import org.apache.seatunnel.connectors.seatunnel.jdbc.config.JdbcConnectionConfig;
 import org.apache.seatunnel.connectors.seatunnel.jdbc.exception.JdbcConnectorErrorCode;
 import org.apache.seatunnel.connectors.seatunnel.jdbc.exception.JdbcConnectorException;
 import org.apache.seatunnel.connectors.seatunnel.jdbc.internal.connection.SimpleJdbcConnectionProvider;
+import org.apache.seatunnel.connectors.seatunnel.jdbc.utils.LoginUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.security.UserGroupInformation;
 
 import lombok.NonNull;
@@ -50,8 +54,15 @@ public class HiveJdbcConnectionProvider extends SimpleJdbcConnectionProvider {
             System.setProperty("java.security.krb5.conf", jdbcConfig.krb5Path);
             Configuration configuration = new Configuration();
             configuration.set("hadoop.security.authentication", "kerberos");
-            UserGroupInformation.setConfiguration(configuration);
+            configuration.set(CommonConfigurationKeysPublic.HADOOP_SECURITY_AUTHORIZATION, "true");
+
             try {
+                if (StringUtils.isNotBlank("hiveserver2")) {
+                    LoginUtil.setJaasConf(
+                            "Client", "hiveuser@HADOOP.COM", jdbcConfig.kerberosKeytabPath);
+                    LoginUtil.setZookeeperServerPrincipal("zookeeper/hadoop.hadoop.com");
+                }
+                UserGroupInformation.setConfiguration(configuration);
                 UserGroupInformation.loginUserFromKeytab(
                         jdbcConfig.kerberosPrincipal, jdbcConfig.kerberosKeytabPath);
             } catch (IOException e) {
