@@ -49,6 +49,7 @@ import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.D
 import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.FIELD_DELIMITER;
 import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.FORMAT;
 import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.KAFKA_CONFIG;
+import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.KRB5_CONF_PATH;
 import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.PARTITION;
 import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.PARTITION_KEY_FIELDS;
 import static org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.SEMANTICS;
@@ -67,6 +68,8 @@ public class KafkaSinkWriter implements SinkWriter<SeaTunnelRow, KafkaCommitInfo
     private final KafkaProduceSender<byte[], byte[]> kafkaProducerSender;
     private final SeaTunnelRowSerializer<byte[], byte[]> seaTunnelRowSerializer;
 
+    private String krb5Path;
+
     private static final int PREFIX_RANGE = 10000;
 
     public KafkaSinkWriter(
@@ -81,6 +84,10 @@ public class KafkaSinkWriter implements SinkWriter<SeaTunnelRow, KafkaCommitInfo
             MessageContentPartitioner.setAssignPartitions(pluginConfig.get(ASSIGN_PARTITIONS));
         }
 
+        if (pluginConfig.get(KRB5_CONF_PATH) != null) {
+            this.krb5Path = pluginConfig.get(KRB5_CONF_PATH);
+        }
+
         if (pluginConfig.get(TRANSACTION_PREFIX) != null) {
             this.transactionPrefix = pluginConfig.get(TRANSACTION_PREFIX);
         } else {
@@ -93,7 +100,9 @@ public class KafkaSinkWriter implements SinkWriter<SeaTunnelRow, KafkaCommitInfo
         if (KafkaSemantics.EXACTLY_ONCE.equals(getKafkaSemantics(pluginConfig))) {
             this.kafkaProducerSender =
                     new KafkaTransactionSender<>(
-                            this.transactionPrefix, getKafkaProperties(pluginConfig));
+                            this.transactionPrefix,
+                            getKafkaProperties(pluginConfig),
+                            this.krb5Path);
             // abort all transaction number bigger than current transaction, because they maybe
             // already start
             //  transaction.
@@ -104,7 +113,7 @@ public class KafkaSinkWriter implements SinkWriter<SeaTunnelRow, KafkaCommitInfo
                     generateTransactionId(this.transactionPrefix, this.lastCheckpointId + 1));
         } else {
             this.kafkaProducerSender =
-                    new KafkaNoTransactionSender<>(getKafkaProperties(pluginConfig));
+                    new KafkaNoTransactionSender<>(getKafkaProperties(pluginConfig), this.krb5Path);
         }
     }
 

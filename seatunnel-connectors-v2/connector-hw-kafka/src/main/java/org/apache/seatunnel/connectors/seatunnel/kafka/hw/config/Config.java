@@ -177,4 +177,11 @@ public class Config {
                     .defaultValue(KafkaSemantics.NON)
                     .withDescription(
                             "Semantics that can be chosen EXACTLY_ONCE/AT_LEAST_ONCE/NON, default NON.");
+
+    public static final Option<String> KRB5_CONF_PATH =
+            Options.key("krb5_conf_path")
+                    .stringType()
+                    .defaultValue("")
+                    .withDescription(
+                            "Semantics that can be chosen EXACTLY_ONCE/AT_LEAST_ONCE/NON, default NON.");
 }

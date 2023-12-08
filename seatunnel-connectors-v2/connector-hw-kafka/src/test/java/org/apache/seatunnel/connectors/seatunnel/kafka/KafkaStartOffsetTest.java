@@ -25,7 +25,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.config.SaslConfigs;
-import org.apache.kafka.common.serialization.StringSerializer;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -54,9 +53,6 @@ public class KafkaStartOffsetTest {
     @Test
     void producer() {
         Properties props = new Properties();
-        System.setProperty(
-                "java.security.krb5.conf",
-                "D:/env/hw-auth/kafkauser_1701846620406_keytab/krb5.conf");
         props.put(
                 SaslConfigs.SASL_JAAS_CONFIG,
                 "com.sun.security.auth.module.Krb5LoginModule required useKeyTab=true storeKey=true keyTab=\"D:/env/hw-auth/kafkauser_1701846620406_keytab/user.keytab\" principal=\"kafkauser\" debug=true;");
@@ -64,10 +60,10 @@ public class KafkaStartOffsetTest {
         props.put("security.protocol", "SASL_PLAINTEXT");
         props.put("sasl.kerberos.service.name", "kafka");
         props.put("sasl.mechanism", "GSSAPI");
-        props.put("key.serializer", StringSerializer.class.getName());
-        props.put("value.serializer", StringSerializer.class.getName());
 
-        KafkaNoTransactionSender kafkaNoTransactionSender = new KafkaNoTransactionSender(props);
+        KafkaNoTransactionSender kafkaNoTransactionSender =
+                new KafkaNoTransactionSender(
+                        props, "D:/env/hw-auth/kafkauser_1701846620406_keytab/krb5.conf");
 
         for (int i = 0; i < 20; i++) {
             kafkaNoTransactionSender.send(

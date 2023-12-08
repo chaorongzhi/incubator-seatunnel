@@ -55,19 +55,8 @@ public class LoginUtil {
      * @param keytabPath
      * @throws IOException
      */
-    public static void setJaasFile(String principal, String keytabPath) throws IOException {
-        String jaasPath =
-                new File(System.getProperty("java.io.tmpdir"))
-                        + File.separator
-                        + System.getProperty("user.name")
-                        + JAAS_POSTFIX;
-
-        // windows路径下分隔符替换
-        jaasPath = jaasPath.replace("\\", "\\\\");
-        // 删除jaas文件
-        deleteJaasFile(jaasPath);
-        writeJaasFile(jaasPath, principal, keytabPath);
-        System.setProperty(JAVA_SECURITY_LOGIN_CONF, jaasPath);
+    public static void setJaasFile(String jassConfig) throws IOException {
+        System.setProperty(JAVA_SECURITY_LOGIN_CONF, jassConfig);
     }
 
     /**

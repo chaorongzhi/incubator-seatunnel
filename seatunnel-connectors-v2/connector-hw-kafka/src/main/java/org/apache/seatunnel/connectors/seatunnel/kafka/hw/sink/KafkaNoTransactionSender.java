@@ -19,12 +19,10 @@ package org.apache.seatunnel.connectors.seatunnel.kafka.hw.sink;
 
 import org.apache.seatunnel.connectors.seatunnel.kafka.hw.state.KafkaCommitInfo;
 import org.apache.seatunnel.connectors.seatunnel.kafka.hw.state.KafkaSinkState;
-import org.apache.seatunnel.connectors.seatunnel.kafka.hw.utils.LoginUtil;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -41,29 +39,11 @@ public class KafkaNoTransactionSender<K, V> implements KafkaProduceSender<K, V> 
 
     private KafkaProducer<K, V> kafkaProducer;
 
-    /** 用户自己申请的机机账号keytab文件名称 */
-    private static final String USER_KEYTAB_FILE = "user.keytab";
+    private static final String KRB5_Path = "java.security.krb5.conf";
 
-    /** 用户自己申请的机机账号名称 */
-    private static final String USER_PRINCIPAL = "venuskafka";
-
-    public KafkaNoTransactionSender(Properties properties) {
+    public KafkaNoTransactionSender(Properties properties, String krb5Path) {
+        System.setProperty(KRB5_Path, krb5Path);
         this.kafkaProducer = new KafkaProducer<>(properties);
-    }
-
-    public void securityPrepare() throws IOException {
-        String filePath =
-                "D:\\code\\seatunnel-dev\\incubator-seatunnel\\seatunnel-connectors-v2\\connector-kafka-hw\\src\\main\\resources\\conf\\";
-        String krbFile = filePath + "krb5.conf";
-        String userKeyTableFile = filePath + USER_KEYTAB_FILE;
-
-        // windows路径下分隔符替换
-        userKeyTableFile = userKeyTableFile.replace("\\", "\\\\");
-        krbFile = krbFile.replace("\\", "\\\\");
-
-        LoginUtil.setKrb5Config(krbFile);
-        LoginUtil.setZookeeperServerPrincipal("zookeeper/hadoop.hadoop.com");
-        LoginUtil.setJaasFile(USER_PRINCIPAL, userKeyTableFile);
     }
 
     @Override

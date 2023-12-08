@@ -45,10 +45,14 @@ public class KafkaTransactionSender<K, V> implements KafkaProduceSender<K, V> {
     private String transactionId;
     private final String transactionPrefix;
     private final Properties kafkaProperties;
+    private static final String KRB5_PATH = "java.security.krb5.conf";
+    private final String krb5Path;
 
-    public KafkaTransactionSender(String transactionPrefix, Properties kafkaProperties) {
+    public KafkaTransactionSender(
+            String transactionPrefix, Properties kafkaProperties, String krb5Path) {
         this.transactionPrefix = transactionPrefix;
         this.kafkaProperties = kafkaProperties;
+        this.krb5Path = krb5Path;
     }
 
     @Override
@@ -123,6 +127,7 @@ public class KafkaTransactionSender<K, V> implements KafkaProduceSender<K, V> {
     private KafkaInternalProducer<K, V> getTransactionProducer(
             Properties properties, String transactionId) {
         close();
+        System.setProperty(KRB5_PATH, this.krb5Path);
         Properties transactionProperties = (Properties) properties.clone();
         transactionProperties.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, transactionId);
         KafkaInternalProducer<K, V> transactionProducer =
