@@ -48,7 +48,7 @@ public class ElasticsearchSink
 
     @Override
     public String getPluginName() {
-        return "Elasticsearch-hw";
+        return "HwElasticsearch";
     }
 
     @Override

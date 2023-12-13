@@ -36,7 +36,7 @@ public class KafkaSourceFactory implements TableSourceFactory {
 
     @Override
     public String factoryIdentifier() {
-        return "Kafka-hw";
+        return "HwKafka";
     }
 
     @Override

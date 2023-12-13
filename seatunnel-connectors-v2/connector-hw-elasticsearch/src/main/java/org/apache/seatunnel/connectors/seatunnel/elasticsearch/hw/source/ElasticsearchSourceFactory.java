@@ -31,7 +31,7 @@ import com.google.auto.service.AutoService;
 public class ElasticsearchSourceFactory implements TableSourceFactory {
     @Override
     public String factoryIdentifier() {
-        return "Elasticsearch-hw";
+        return "HwElasticsearch";
     }
 
     @Override

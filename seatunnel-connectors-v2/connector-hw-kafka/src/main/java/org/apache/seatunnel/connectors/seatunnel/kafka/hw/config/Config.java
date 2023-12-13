@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class Config {
 
-    public static final String CONNECTOR_IDENTITY = "Kafka-hw";
+    public static final String CONNECTOR_IDENTITY = "HwKafka";
     /** The default field delimiter is “,” */
     public static final String DEFAULT_FIELD_DELIMITER = ",";
 

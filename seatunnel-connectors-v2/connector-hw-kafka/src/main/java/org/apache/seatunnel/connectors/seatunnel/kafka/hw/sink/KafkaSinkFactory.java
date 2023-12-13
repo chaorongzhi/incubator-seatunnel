@@ -33,7 +33,7 @@ import java.util.Arrays;
 public class KafkaSinkFactory implements TableSinkFactory {
     @Override
     public String factoryIdentifier() {
-        return "Kafka-hw";
+        return "HwKafka";
     }
 
     @Override

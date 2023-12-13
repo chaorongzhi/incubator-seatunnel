@@ -29,7 +29,7 @@ import com.google.auto.service.AutoService;
 public class ElasticsearchSinkFactory implements TableSinkFactory {
     @Override
     public String factoryIdentifier() {
-        return "Elasticsearch-hw";
+        return "HwElasticsearch";
     }
 
     @Override

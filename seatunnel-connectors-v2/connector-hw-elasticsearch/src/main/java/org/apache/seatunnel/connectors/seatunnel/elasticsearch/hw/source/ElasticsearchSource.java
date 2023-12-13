@@ -56,7 +56,7 @@ public class ElasticsearchSource
 
     @Override
     public String getPluginName() {
-        return "Elasticsearch-hw";
+        return "HwElasticsearch";
     }
 
     @Override
