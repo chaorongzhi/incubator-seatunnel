@@ -131,7 +131,7 @@ public class Common {
 
     /** Plugin Connector Dir */
     public static Path connectorDir() {
-        return Paths.get(getSeaTunnelHome(), "connectors");
+        return Paths.get(getSeaTunnelHome(), "connectors", "seatunnel");
     }
 
     /** lib Dir */
