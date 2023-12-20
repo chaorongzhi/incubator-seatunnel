@@ -238,4 +238,10 @@ public class BaseSinkConfig {
                     .booleanType()
                     .defaultValue(false)
                     .withDescription("false:dont write header,true:write header");
+
+    public static final Option<String> HADOOP_USER_NAME =
+            Options.key("hadoop_user_name")
+                    .stringType()
+                    .defaultValue("hadoop")
+                    .withDescription("hadoop user name");
 }
