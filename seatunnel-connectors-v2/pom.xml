@@ -31,7 +31,7 @@
 
     <modules>
         <module>connector-common</module>
-        <!--        <module>connector-cdc</module>-->
+        <module>connector-cdc</module>
         <module>connector-clickhouse</module>
         <!--        <module>connector-console</module>-->
         <!--        <module>connector-fake</module>-->
@@ -41,8 +41,8 @@
         <module>connector-hw-kafka</module>
         <!--        <module>connector-pulsar</module>-->
         <!--        <module>connector-socket</module>-->
-        <!--        <module>connector-hive</module>-->
-        <!--        <module>connector-file</module>-->
+        <module>connector-hive</module>
+        <module>connector-file</module>
         <!--        <module>connector-hudi</module>-->
         <!--        <module>connector-assert</module>-->
         <!--        <module>connector-kudu</module>-->
@@ -52,10 +52,10 @@
         <module>connector-hw-elasticsearch</module>
         <!--        <module>connector-iotdb</module>-->
         <!--        <module>connector-neo4j</module>-->
-        <!--        <module>connector-redis</module>-->
+        <module>connector-redis</module>
         <!--        <module>connector-datahub</module>-->
         <!--        <module>connector-sentry</module>-->
-        <!--        <module>connector-mongodb</module>-->
+        <module>connector-mongodb</module>
         <!--        <module>connector-iceberg</module>-->
         <!--        <module>connector-influxdb</module>-->
         <!--        <module>connector-amazondynamodb</module>-->
