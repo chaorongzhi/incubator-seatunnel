@@ -36,6 +36,7 @@ public class HadoopConf implements Serializable {
     protected String kerberosPrincipal;
     protected String kerberosKeytabPath;
     protected String hadoopUserName;
+    protected String Krb5Path;
 
     public HadoopConf(String hdfsNameKey) {
         this.hdfsNameKey = hdfsNameKey;

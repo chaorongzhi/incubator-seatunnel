@@ -49,12 +49,15 @@ public class HiveMetaStoreProxy {
         String metastoreUri = config.getString(HiveConfig.METASTORE_URI.key());
         HiveConf hiveConf = new HiveConf();
         hiveConf.set("hive.metastore.uris", metastoreUri);
+        hiveConf.set("hadoop.rpc.protection", "privacy");
         if (config.hasPath(BaseSourceConfig.KERBEROS_PRINCIPAL.key())
                 && config.hasPath(BaseSourceConfig.KERBEROS_KEYTAB_PATH.key())) {
             String principal = config.getString(BaseSourceConfig.KERBEROS_PRINCIPAL.key());
             String keytabPath = config.getString(BaseSourceConfig.KERBEROS_KEYTAB_PATH.key());
+            String krb5Path = config.getString(BaseSourceConfig.KRB5_PATH.key());
             Configuration configuration = new Configuration();
-            FileSystemUtils.doKerberosAuthentication(configuration, principal, keytabPath);
+            FileSystemUtils.doKerberosAuthentication(
+                    configuration, principal, keytabPath, krb5Path);
         }
         try {
             if (config.hasPath(HiveConfig.HIVE_SITE_PATH.key())) {

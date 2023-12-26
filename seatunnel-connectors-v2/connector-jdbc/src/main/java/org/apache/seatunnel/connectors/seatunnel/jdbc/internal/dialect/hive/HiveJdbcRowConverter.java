@@ -17,14 +17,8 @@
 
 package org.apache.seatunnel.connectors.seatunnel.jdbc.internal.dialect.hive;
 
-import org.apache.seatunnel.api.table.type.SeaTunnelRow;
-import org.apache.seatunnel.api.table.type.SeaTunnelRowType;
-import org.apache.seatunnel.connectors.seatunnel.jdbc.exception.JdbcConnectorErrorCode;
-import org.apache.seatunnel.connectors.seatunnel.jdbc.exception.JdbcConnectorException;
 import org.apache.seatunnel.connectors.seatunnel.jdbc.internal.converter.AbstractJdbcRowConverter;
 import org.apache.seatunnel.connectors.seatunnel.jdbc.internal.dialect.DatabaseIdentifier;
-
-import java.sql.PreparedStatement;
 
 public class HiveJdbcRowConverter extends AbstractJdbcRowConverter {
 
@@ -33,11 +27,11 @@ public class HiveJdbcRowConverter extends AbstractJdbcRowConverter {
         return DatabaseIdentifier.HIVE;
     }
 
-    @Override
-    public PreparedStatement toExternal(
-            SeaTunnelRowType rowType, SeaTunnelRow row, PreparedStatement statement) {
-        throw new JdbcConnectorException(
-                JdbcConnectorErrorCode.DONT_SUPPORT_SINK,
-                "The Hive jdbc connector don't support sink");
-    }
+    //    @Override
+    //    public PreparedStatement toExternal(
+    //            SeaTunnelRowType rowType, SeaTunnelRow row, PreparedStatement statement) {
+    //        throw new JdbcConnectorException(
+    //                JdbcConnectorErrorCode.DONT_SUPPORT_SINK,
+    //                "The Hive jdbc connector don't support sink");
+    //    }
 }

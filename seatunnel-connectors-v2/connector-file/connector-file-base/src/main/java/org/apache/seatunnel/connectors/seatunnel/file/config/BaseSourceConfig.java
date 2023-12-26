@@ -126,4 +126,10 @@ public class BaseSourceConfig {
                     .enumType(CompressFormat.class)
                     .defaultValue(CompressFormat.NONE)
                     .withDescription("Compression codec");
+
+    public static final Option<String> KRB5_PATH =
+            Options.key("krb5_path")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription("Krb5 file path");
 }

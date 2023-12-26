@@ -49,8 +49,6 @@ public class HiveJdbcConnectionProvider extends SimpleJdbcConnectionProvider {
     private static final String ZOOKEEPER_SERVER_PRINCIPAL = "zookeeper_server_principal";
     private static final String ZOOKEEPER_NAMESPACE = "zookeeper_namespace";
 
-    private static final String HIVE_PRINCIPAL = "hive_principal";
-
     public HiveJdbcConnectionProvider(@NonNull JdbcConnectionConfig jdbcConfig) {
         super(jdbcConfig);
     }
@@ -61,7 +59,6 @@ public class HiveJdbcConnectionProvider extends SimpleJdbcConnectionProvider {
             return super.getConnection();
         }
         JdbcConnectionConfig jdbcConfig = super.getJdbcConfig();
-        String url = jdbcConfig.getUrl();
         if (jdbcConfig.useKerberos) {
             System.setProperty(KRB5_CONF_PATH, jdbcConfig.krb5Path);
             Configuration configuration = new Configuration();
@@ -93,7 +90,7 @@ public class HiveJdbcConnectionProvider extends SimpleJdbcConnectionProvider {
                 throw new JdbcConnectorException(KERBEROS_AUTHENTICATION_FAILED, e);
             }
 
-            url = getHwHiveUrl(url);
+            //            super.getJdbcConfig().url = getHwHiveUrl(url);
         }
         Driver driver = getLoadedDriver();
         Properties info = new Properties();
@@ -103,7 +100,7 @@ public class HiveJdbcConnectionProvider extends SimpleJdbcConnectionProvider {
         if (super.getJdbcConfig().getPassword().isPresent()) {
             info.setProperty("password", super.getJdbcConfig().getPassword().get());
         }
-        super.setConnection(driver.connect(url, info));
+        super.setConnection(driver.connect(super.getJdbcConfig().getUrl(), info));
         if (super.getConnection() == null) {
             // Throw same exception as DriverManager.getConnection when no driver found to match
             // caller expectation.
@@ -112,44 +109,5 @@ public class HiveJdbcConnectionProvider extends SimpleJdbcConnectionProvider {
                     "No suitable driver found for " + super.getJdbcConfig().getUrl());
         }
         return super.getConnection();
-    }
-
-    private String getHwHiveUrl(String url) {
-        String[] urlInfos = url.split("\\?");
-        String suffix = urlInfos.length > 1 ? urlInfos[1] : "";
-        StringBuilder urls = new StringBuilder(urlInfos[0]);
-
-        String zookeeperNamespace = jdbcConfig.getProperties().get(ZOOKEEPER_NAMESPACE);
-        if (StringUtils.isNotBlank(zookeeperNamespace)) {
-            urls.append(";serviceDiscoveryMode=")
-                    .append("zooKeeper")
-                    .append(";zooKeeperNamespace=")
-                    .append(zookeeperNamespace);
-        }
-
-        String hivePrincipal = jdbcConfig.getProperties().get(HIVE_PRINCIPAL);
-        if (jdbcConfig.useKerberos) {
-            urls.append(";sasl.qop=")
-                    .append("auth-conf")
-                    .append(";auth=")
-                    .append("KERBEROS")
-                    .append(";principal=")
-                    .append(hivePrincipal)
-                    .append(";user.principal=")
-                    .append(jdbcConfig.kerberosPrincipal)
-                    .append(";");
-        } else {
-            // 普通模式
-            urls.append(";auth=none");
-        }
-
-        urls.append("?");
-        if (StringUtils.isNotBlank(suffix)) {
-            urls.append(suffix).append("&");
-        }
-
-        urls.append("hive.compute.query.using.stats=false");
-
-        return urls.toString();
     }
 }

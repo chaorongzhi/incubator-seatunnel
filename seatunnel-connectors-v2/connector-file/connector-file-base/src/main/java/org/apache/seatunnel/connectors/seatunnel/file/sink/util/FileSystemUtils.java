@@ -52,12 +52,15 @@ public class FileSystemUtils implements Serializable {
     }
 
     public static void doKerberosAuthentication(
-            Configuration configuration, String principal, String keytabPath) {
-        if (StringUtils.isBlank(principal) || StringUtils.isBlank(keytabPath)) {
+            Configuration configuration, String principal, String keytabPath, String krb5path) {
+        if (StringUtils.isBlank(principal)
+                || StringUtils.isBlank(keytabPath)
+                || StringUtils.isBlank(krb5path)) {
             log.warn(
-                    "Principal [{}] or keytabPath [{}] is empty, it will skip kerberos authentication",
+                    "Principal [{}] or keytabPath [{}] or krb5Path [{}] is empty, it will skip kerberos authentication",
                     principal,
-                    keytabPath);
+                    keytabPath,
+                    krb5path);
         } else {
             configuration.set("hadoop.security.authentication", "kerberos");
             UserGroupInformation.setConfiguration(configuration);
@@ -66,6 +69,7 @@ public class FileSystemUtils implements Serializable {
                         "Start Kerberos authentication using principal {} and keytab {}",
                         principal,
                         keytabPath);
+                System.setProperty("java.security.krb5.conf", krb5path);
                 UserGroupInformation.loginUserFromKeytab(principal, keytabPath);
                 log.info("Kerberos authentication successful");
             } catch (IOException e) {
@@ -88,7 +92,8 @@ public class FileSystemUtils implements Serializable {
         hadoopConf.setExtraOptionsForConfiguration(configuration);
         String principal = hadoopConf.getKerberosPrincipal();
         String keytabPath = hadoopConf.getKerberosKeytabPath();
-        doKerberosAuthentication(configuration, principal, keytabPath);
+        String krb5Path = hadoopConf.getKrb5Path();
+        doKerberosAuthentication(configuration, principal, keytabPath, krb5Path);
         return configuration;
     }
 

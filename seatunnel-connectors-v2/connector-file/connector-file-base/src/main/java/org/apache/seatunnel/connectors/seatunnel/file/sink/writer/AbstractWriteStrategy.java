@@ -159,8 +159,10 @@ public abstract class AbstractWriteStrategy implements WriteStrategy {
         this.hadoopConf.setExtraOptionsForConfiguration(configuration);
         String principal = hadoopConf.getKerberosPrincipal();
         String keytabPath = hadoopConf.getKerberosKeytabPath();
+        String krb5Path = hadoopConf.getKrb5Path();
         if (!isKerberosAuthorization) {
-            FileSystemUtils.doKerberosAuthentication(configuration, principal, keytabPath);
+            FileSystemUtils.doKerberosAuthentication(
+                    configuration, principal, keytabPath, krb5Path);
             isKerberosAuthorization = true;
         }
         return configuration;
