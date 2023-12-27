@@ -154,6 +154,15 @@ public abstract class AbstractReadStrategy implements ReadStrategy {
             }
         }
 
+        //        if (fileNames.isEmpty()) {
+        //            throw new FileConnectorException(
+        //                    FileConnectorErrorCode.FILE_LIST_EMPTY,
+        //                    "The target file list is empty,"
+        //                            + "SeaTunnel will not be able to sync empty table, "
+        //                            + "please check the configuration parameters such as:
+        // [file_filter_pattern]");
+        //        }
+
         return fileNames;
     }
 
