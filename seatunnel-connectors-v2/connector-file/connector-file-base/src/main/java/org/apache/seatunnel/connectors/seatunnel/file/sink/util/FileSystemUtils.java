@@ -100,6 +100,7 @@ public class FileSystemUtils implements Serializable {
     public FileSystem getFileSystem(@NonNull String path) throws IOException {
         if (configuration == null) {
             configuration = getConfiguration(hadoopConf);
+            configuration.set("hadoop.rpc.protection", "privacy");
         }
         FileSystem fileSystem =
                 FileSystem.get(URI.create(path.replaceAll("\\\\", "/")), configuration);

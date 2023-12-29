@@ -26,6 +26,7 @@ import org.apache.seatunnel.connectors.seatunnel.hive.exception.HiveConnectorErr
 import org.apache.seatunnel.connectors.seatunnel.hive.exception.HiveConnectorException;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.MetaException;
@@ -49,13 +50,15 @@ public class HiveMetaStoreProxy {
         String metastoreUri = config.getString(HiveConfig.METASTORE_URI.key());
         HiveConf hiveConf = new HiveConf();
         hiveConf.set("hive.metastore.uris", metastoreUri);
-        hiveConf.set("hadoop.rpc.protection", "privacy");
         if (config.hasPath(BaseSourceConfig.KERBEROS_PRINCIPAL.key())
                 && config.hasPath(BaseSourceConfig.KERBEROS_KEYTAB_PATH.key())) {
+            hiveConf.set("hadoop.rpc.protection", "privacy");
             String principal = config.getString(BaseSourceConfig.KERBEROS_PRINCIPAL.key());
             String keytabPath = config.getString(BaseSourceConfig.KERBEROS_KEYTAB_PATH.key());
             String krb5Path = config.getString(BaseSourceConfig.KRB5_PATH.key());
             Configuration configuration = new Configuration();
+            configuration.set(
+                    CommonConfigurationKeysPublic.HADOOP_SECURITY_AUTHENTICATION, "kerberos");
             FileSystemUtils.doKerberosAuthentication(
                     configuration, principal, keytabPath, krb5Path);
         }
