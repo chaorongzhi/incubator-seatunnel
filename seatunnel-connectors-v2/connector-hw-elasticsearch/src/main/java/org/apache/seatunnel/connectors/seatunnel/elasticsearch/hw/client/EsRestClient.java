@@ -87,7 +87,7 @@ public class EsRestClient {
 
     private static RestClientBuilder getRestClientBuilder(
             List<String> hosts, HwEsAuthConfig hwEsAuthConfig) {
-        HttpHost[] httpHosts = getHostArray(hosts, hwEsAuthConfig.getIsSecureMode());
+        HttpHost[] httpHosts = getHostArray(hosts);
 
         if ("false".equals(hwEsAuthConfig.getIsSecureMode())) {
             System.setProperty("es.security.indication", "false");
@@ -124,20 +124,10 @@ public class EsRestClient {
         return builder;
     }
 
-    private static HttpHost[] getHostArray(List<String> hostsStr, String isSecureMode) {
-        String schema;
-        if ("false".equals(isSecureMode)) {
-            schema = "http";
-        } else {
-            schema = "https";
-        }
-
+    private static HttpHost[] getHostArray(List<String> hostsStr) {
         List<HttpHost> hosts = new ArrayList<>();
-
         for (String host : hostsStr) {
-            String[] hostInfo = host.split(":");
-            HttpHost hostNew = new HttpHost(hostInfo[0], Integer.parseInt(hostInfo[1]), schema);
-            hosts.add(hostNew);
+            hosts.add(HttpHost.create(host));
         }
 
         return hosts.toArray(new HttpHost[0]);
