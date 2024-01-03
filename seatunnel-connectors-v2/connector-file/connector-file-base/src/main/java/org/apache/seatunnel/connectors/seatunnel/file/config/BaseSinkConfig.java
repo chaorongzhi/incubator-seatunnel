@@ -242,6 +242,6 @@ public class BaseSinkConfig {
     public static final Option<String> HADOOP_USER_NAME =
             Options.key("hadoop_user_name")
                     .stringType()
-                    .defaultValue("hadoop")
+                    .noDefaultValue()
                     .withDescription("hadoop user name");
 }

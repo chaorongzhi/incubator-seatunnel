@@ -38,6 +38,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class FileSystemUtils implements Serializable {
@@ -93,6 +94,7 @@ public class FileSystemUtils implements Serializable {
         String principal = hadoopConf.getKerberosPrincipal();
         String keytabPath = hadoopConf.getKerberosKeytabPath();
         String krb5Path = hadoopConf.getKrb5Path();
+        configuration.set("hadoop.rpc.protection", "privacy");
         doKerberosAuthentication(configuration, principal, keytabPath, krb5Path);
         return configuration;
     }
@@ -100,10 +102,22 @@ public class FileSystemUtils implements Serializable {
     public FileSystem getFileSystem(@NonNull String path) throws IOException {
         if (configuration == null) {
             configuration = getConfiguration(hadoopConf);
-            configuration.set("hadoop.rpc.protection", "privacy");
         }
-        FileSystem fileSystem =
-                FileSystem.get(URI.create(path.replaceAll("\\\\", "/")), configuration);
+        FileSystem fileSystem = null;
+        if (Objects.nonNull(hadoopConf.getHadoopUserName())) {
+            try {
+                fileSystem =
+                        FileSystem.get(
+                                URI.create(path.replaceAll("\\\\", "/")),
+                                configuration,
+                                hadoopConf.getHadoopUserName());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            fileSystem = FileSystem.get(URI.create(path.replaceAll("\\\\", "/")), configuration);
+        }
+
         fileSystem.setWriteChecksum(false);
         return fileSystem;
     }
