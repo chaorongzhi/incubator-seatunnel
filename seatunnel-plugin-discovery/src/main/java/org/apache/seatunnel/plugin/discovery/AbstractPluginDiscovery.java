@@ -113,7 +113,8 @@ public abstract class AbstractPluginDiscovery<T> implements PluginDiscovery<T> {
 
     protected static Config loadConnectorPluginConfig() {
         return ConfigFactory.parseFile(
-                        Paths.get(Common.getSeaTunnelHome(), PLUGIN_MAPPING_FILE).toFile())
+                        Paths.get(Common.getSeaTunnelHome(), "connectors", PLUGIN_MAPPING_FILE)
+                                .toFile())
                 .resolve(ConfigResolveOptions.defaults().setAllowUnresolved(true))
                 .resolveWith(
                         ConfigFactory.systemProperties(),
