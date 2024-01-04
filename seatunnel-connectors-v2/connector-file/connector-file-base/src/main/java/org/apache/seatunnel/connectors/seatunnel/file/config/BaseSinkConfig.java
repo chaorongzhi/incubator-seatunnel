@@ -209,6 +209,12 @@ public class BaseSinkConfig {
                     .noDefaultValue()
                     .withDescription("The path of hdfs-site.xml");
 
+    public static final Option<String> CORE_SITE_PATH =
+            Options.key("core_site_path")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription("The path of core-site.xml");
+
     public static final Option<String> KERBEROS_PRINCIPAL =
             Options.key("kerberos_principal")
                     .stringType()
@@ -244,4 +250,10 @@ public class BaseSinkConfig {
                     .stringType()
                     .noDefaultValue()
                     .withDescription("hadoop user name");
+
+    public static final Option<String> KRB5_PATH =
+            Options.key("krb5_path")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription("krb5 file path");
 }

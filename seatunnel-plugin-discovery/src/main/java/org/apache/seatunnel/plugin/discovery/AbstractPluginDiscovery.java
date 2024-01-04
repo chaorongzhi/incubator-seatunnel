@@ -47,6 +47,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -111,7 +112,8 @@ public abstract class AbstractPluginDiscovery<T> implements PluginDiscovery<T> {
     }
 
     protected static Config loadConnectorPluginConfig() {
-        return ConfigFactory.parseFile(Common.connectorDir().resolve(PLUGIN_MAPPING_FILE).toFile())
+        return ConfigFactory.parseFile(
+                        Paths.get(Common.getSeaTunnelHome(), PLUGIN_MAPPING_FILE).toFile())
                 .resolve(ConfigResolveOptions.defaults().setAllowUnresolved(true))
                 .resolveWith(
                         ConfigFactory.systemProperties(),

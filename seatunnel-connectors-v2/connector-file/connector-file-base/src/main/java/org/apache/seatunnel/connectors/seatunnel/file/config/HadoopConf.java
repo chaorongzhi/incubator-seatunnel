@@ -33,6 +33,7 @@ public class HadoopConf implements Serializable {
     protected Map<String, String> extraOptions = new HashMap<>();
     protected String hdfsNameKey;
     protected String hdfsSitePath;
+    protected String coreSitePath;
     protected String kerberosPrincipal;
     protected String kerberosKeytabPath;
     protected String hadoopUserName;
@@ -56,6 +57,9 @@ public class HadoopConf implements Serializable {
         }
         if (hdfsSitePath != null) {
             configuration.addResource(new Path(hdfsSitePath));
+        }
+        if (coreSitePath != null) {
+            configuration.addResource(new Path(coreSitePath));
         }
     }
 }

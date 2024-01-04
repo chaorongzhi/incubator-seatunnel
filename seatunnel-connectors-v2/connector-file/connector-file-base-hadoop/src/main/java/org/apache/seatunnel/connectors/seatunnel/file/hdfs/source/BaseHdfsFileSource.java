@@ -72,6 +72,9 @@ public abstract class BaseHdfsFileSource extends BaseFileSource {
             hadoopConf.setHdfsSitePath(
                     pluginConfig.getString(HdfsSourceConfig.HDFS_SITE_PATH.key()));
         }
+        if (pluginConfig.hasPath(BaseSinkConfig.CORE_SITE_PATH.key())) {
+            hadoopConf.setCoreSitePath(pluginConfig.getString(BaseSinkConfig.CORE_SITE_PATH.key()));
+        }
         if (pluginConfig.hasPath(HdfsSourceConfig.KERBEROS_PRINCIPAL.key())) {
             hadoopConf.setKerberosPrincipal(
                     pluginConfig.getString(HdfsSourceConfig.KERBEROS_PRINCIPAL.key()));

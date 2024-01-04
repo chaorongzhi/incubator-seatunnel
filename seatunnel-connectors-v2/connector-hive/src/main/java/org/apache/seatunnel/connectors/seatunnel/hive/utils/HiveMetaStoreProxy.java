@@ -19,6 +19,7 @@ package org.apache.seatunnel.connectors.seatunnel.hive.utils;
 
 import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
+import org.apache.seatunnel.connectors.seatunnel.file.config.BaseSinkConfig;
 import org.apache.seatunnel.connectors.seatunnel.file.config.BaseSourceConfig;
 import org.apache.seatunnel.connectors.seatunnel.file.sink.util.FileSystemUtils;
 import org.apache.seatunnel.connectors.seatunnel.hive.config.HiveConfig;
@@ -52,7 +53,6 @@ public class HiveMetaStoreProxy {
         hiveConf.set("hive.metastore.uris", metastoreUri);
         if (config.hasPath(BaseSourceConfig.KERBEROS_PRINCIPAL.key())
                 && config.hasPath(BaseSourceConfig.KERBEROS_KEYTAB_PATH.key())) {
-            hiveConf.set("hadoop.rpc.protection", "privacy");
             String principal = config.getString(BaseSourceConfig.KERBEROS_PRINCIPAL.key());
             String keytabPath = config.getString(BaseSourceConfig.KERBEROS_KEYTAB_PATH.key());
             String krb5Path = config.getString(BaseSourceConfig.KRB5_PATH.key());
@@ -65,6 +65,10 @@ public class HiveMetaStoreProxy {
         try {
             if (config.hasPath(HiveConfig.HIVE_SITE_PATH.key())) {
                 String hiveSitePath = config.getString(HiveConfig.HIVE_SITE_PATH.key());
+                hiveConf.addResource(new File(hiveSitePath).toURI().toURL());
+            }
+            if (config.hasPath(BaseSinkConfig.CORE_SITE_PATH.key())) {
+                String hiveSitePath = config.getString(BaseSinkConfig.CORE_SITE_PATH.key());
                 hiveConf.addResource(new File(hiveSitePath).toURI().toURL());
             }
             hiveMetaStoreClient = new HiveMetaStoreClient(hiveConf);

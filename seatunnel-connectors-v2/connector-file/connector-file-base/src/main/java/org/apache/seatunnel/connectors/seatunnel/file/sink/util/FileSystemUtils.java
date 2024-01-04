@@ -64,13 +64,13 @@ public class FileSystemUtils implements Serializable {
                     krb5path);
         } else {
             configuration.set("hadoop.security.authentication", "kerberos");
+            System.setProperty("java.security.krb5.conf", krb5path);
             UserGroupInformation.setConfiguration(configuration);
             try {
                 log.info(
                         "Start Kerberos authentication using principal {} and keytab {}",
                         principal,
                         keytabPath);
-                System.setProperty("java.security.krb5.conf", krb5path);
                 UserGroupInformation.loginUserFromKeytab(principal, keytabPath);
                 log.info("Kerberos authentication successful");
             } catch (IOException e) {
@@ -94,7 +94,6 @@ public class FileSystemUtils implements Serializable {
         String principal = hadoopConf.getKerberosPrincipal();
         String keytabPath = hadoopConf.getKerberosKeytabPath();
         String krb5Path = hadoopConf.getKrb5Path();
-        configuration.set("hadoop.rpc.protection", "privacy");
         doKerberosAuthentication(configuration, principal, keytabPath, krb5Path);
         return configuration;
     }
