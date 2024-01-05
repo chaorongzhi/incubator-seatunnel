@@ -89,8 +89,6 @@ public class HiveJdbcConnectionProvider extends SimpleJdbcConnectionProvider {
             } catch (IOException e) {
                 throw new JdbcConnectorException(KERBEROS_AUTHENTICATION_FAILED, e);
             }
-
-            //            super.getJdbcConfig().url = getHwHiveUrl(url);
         }
         Driver driver = getLoadedDriver();
         Properties info = new Properties();
