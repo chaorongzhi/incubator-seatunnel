@@ -104,10 +104,11 @@ public class TypeConvertUtil {
         } else if (BigInteger.class.equals(type)) {
             return BasicType.STRING_TYPE;
         } else {
+            return BasicType.STRING_TYPE;
             // TODO support pojo
-            throw new ClickhouseConnectorException(
-                    CommonErrorCodeDeprecated.UNSUPPORTED_DATA_TYPE,
-                    "unsupported data type: " + column.getDataType());
+            //            throw new ClickhouseConnectorException(
+            //                    CommonErrorCodeDeprecated.UNSUPPORTED_DATA_TYPE,
+            //                    "unsupported data type: " + column.getDataType());
         }
     }
 
