@@ -84,7 +84,7 @@ public class ConfigBuilder {
         if (!isEncrypt) {
             config = ConfigShadeUtils.decryptConfig(config);
         }
-        log.info("Parsed config file: \n{}", config.root().render(CONFIG_RENDER_OPTIONS));
+        //        log.info("Parsed config file: \n{}", config.root().render(CONFIG_RENDER_OPTIONS));
         return config;
     }
 

@@ -9,17 +9,17 @@ import org.apache.seatunnel.shade.com.typesafe.config.Config;
  * @date 2023/12/8
  */
 public class HwEsAuthConfig {
-    private final int connectTimeout;
-    private final int socketTimeout;
-    private final int connectionRequestTimeout;
-    private final int maxConnPerRoute;
-    private final int maxConnTotal;
-    private final String isSecureMode;
-    private final String principal;
-    private final String snifferEnable;
-    private final String customJaasPath;
-    private final String krb5Path;
-    private final String keytab;
+    private int connectTimeout;
+    private int socketTimeout;
+    private int connectionRequestTimeout;
+    private int maxConnPerRoute;
+    private int maxConnTotal;
+    private String isSecureMode;
+    private String principal;
+    private String snifferEnable;
+    private String customJaasPath;
+    private String krb5Path;
+    private String keytab;
 
     private static final String CONNECT_TIMEOUT = "connectTimeout";
     private static final String SOCKET_TIMOUT = "socketTimeout";
@@ -34,17 +34,39 @@ public class HwEsAuthConfig {
     private static final String KEYTAB = "keytab";
 
     public HwEsAuthConfig(Config config) {
-        this.connectTimeout = config.getInt(CONNECT_TIMEOUT);
-        this.socketTimeout = config.getInt(SOCKET_TIMOUT);
-        this.connectionRequestTimeout = config.getInt(CONNECTION_REQUEST_TIMOUT);
-        this.maxConnPerRoute = config.getInt(MAX_CONN_PER_ROUTE);
-        this.maxConnTotal = config.getInt(MAX_CONN_TOTAL);
-        this.isSecureMode = config.getString(IS_SECURE_MODE);
-        this.principal = config.getString(PRINCIPAL);
-        this.snifferEnable = config.getString(SNIFFER_ENABLE);
-        this.customJaasPath = config.getString(CUSTOM_JASS_PATH);
-        this.krb5Path = config.getString(KRB5_PATH);
-        this.keytab = config.getString(KEYTAB);
+        if (config.hasPath(CONNECT_TIMEOUT)) {
+            this.connectTimeout = config.getInt(CONNECT_TIMEOUT);
+        }
+        if (config.hasPath(SOCKET_TIMOUT)) {
+            this.socketTimeout = config.getInt(SOCKET_TIMOUT);
+        }
+        if (config.hasPath(CONNECTION_REQUEST_TIMOUT)) {
+            this.connectionRequestTimeout = config.getInt(CONNECTION_REQUEST_TIMOUT);
+        }
+        if (config.hasPath(MAX_CONN_PER_ROUTE)) {
+            this.maxConnPerRoute = config.getInt(MAX_CONN_PER_ROUTE);
+        }
+        if (config.hasPath(MAX_CONN_TOTAL)) {
+            this.maxConnTotal = config.getInt(MAX_CONN_TOTAL);
+        }
+        if (config.hasPath(IS_SECURE_MODE)) {
+            this.isSecureMode = config.getString(IS_SECURE_MODE);
+        }
+        if (config.hasPath(PRINCIPAL)) {
+            this.principal = config.getString(PRINCIPAL);
+        }
+        if (config.hasPath(SNIFFER_ENABLE)) {
+            this.snifferEnable = config.getString(SNIFFER_ENABLE);
+        }
+        if (config.hasPath(CUSTOM_JASS_PATH)) {
+            this.customJaasPath = config.getString(CUSTOM_JASS_PATH);
+        }
+        if (config.hasPath(KRB5_PATH)) {
+            this.krb5Path = config.getString(KRB5_PATH);
+        }
+        if (config.hasPath(KEYTAB)) {
+            this.keytab = config.getString(KEYTAB);
+        }
     }
 
     public int getConnectTimeout() {

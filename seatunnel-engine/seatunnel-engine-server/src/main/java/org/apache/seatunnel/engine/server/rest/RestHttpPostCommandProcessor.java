@@ -99,7 +99,7 @@ public class RestHttpPostCommandProcessor extends HttpCommandProcessor<HttpPostC
             throws IllegalArgumentException {
         Map<String, String> requestParams = new HashMap<>();
         RestUtil.buildRequestParams(requestParams, uri);
-        Config config = RestUtil.buildConfig(requestHandle(httpPostCommand), false);
+        Config config = RestUtil.buildConfig(requestHandle(httpPostCommand), true);
         JobConfig jobConfig = new JobConfig();
         jobConfig.setName(requestParams.get(RestConstant.JOB_NAME));
 
