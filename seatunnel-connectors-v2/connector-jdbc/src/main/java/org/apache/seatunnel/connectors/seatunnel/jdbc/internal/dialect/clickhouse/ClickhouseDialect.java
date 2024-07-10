@@ -7,12 +7,6 @@ import org.apache.seatunnel.connectors.seatunnel.jdbc.internal.dialect.JdbcDiale
 
 import java.util.Optional;
 
-/**
- * Description Copyright © 启明星辰 版权所有
- *
- * @author chaorongzhi
- * @date 2024/1/5
- */
 public class ClickhouseDialect implements JdbcDialect {
     @Override
     public String dialectName() {
