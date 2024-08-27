@@ -48,6 +48,12 @@ public class HiveConfig {
                     .noDefaultValue()
                     .withDescription("The path of hive-site.xml");
 
+    public static final Option<String> CORE_SITE_PATH =
+            Options.key("core_site_path")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription("The path of hive-site.xml");
+
     public static final Option<Map<String, String>> HADOOP_CONF =
             Options.key("hive.hadoop.conf")
                     .mapType()

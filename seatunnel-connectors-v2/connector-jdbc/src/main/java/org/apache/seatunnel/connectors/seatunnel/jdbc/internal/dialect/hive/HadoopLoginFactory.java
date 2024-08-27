@@ -17,14 +17,23 @@
 
 package org.apache.seatunnel.connectors.seatunnel.jdbc.internal.dialect.hive;
 
+import org.apache.seatunnel.connectors.seatunnel.jdbc.utils.LoginUtil;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.IOException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Map;
 
 // todo: Add seatunnel-auth-kerberos module and move this to hive connector
 public class HadoopLoginFactory {
+
+    private static final String ZOOKEEPER_SASL_CLIENT_CONFIG = "zookeeper_sasl_client_config";
+    private static final String DEFAULT_ZOOKEEPER_SASL_CLIENT_CONFIG = "Client";
+    private static final String ZOOKEEPER_SERVER_PRINCIPAL = "zookeeper_server_principal";
+    private static final String ZOOKEEPER_NAMESPACE = "zookeeper_namespace";
 
     /** Login with kerberos, and do the given action after login successfully. */
     public static <T> T loginWithKerberos(
@@ -41,6 +50,42 @@ public class HadoopLoginFactory {
         synchronized (UserGroupInformation.class) {
             System.setProperty("java.security.krb5.conf", krb5FilePath);
             // init configuration
+            UserGroupInformation.setConfiguration(configuration);
+            UserGroupInformation userGroupInformation =
+                    UserGroupInformation.loginUserFromKeytabAndReturnUGI(
+                            kerberosPrincipal, kerberosKeytabPath);
+            return userGroupInformation.doAs(
+                    (PrivilegedExceptionAction<T>)
+                            () -> action.run(configuration, userGroupInformation));
+        }
+    }
+
+    public static <T> T loginWithKerberos(
+            Configuration configuration,
+            String krb5FilePath,
+            String kerberosPrincipal,
+            String kerberosKeytabPath,
+            Map<String, String> properties,
+            LoginFunction<T> action)
+            throws IOException, InterruptedException {
+        if (!configuration.get("hadoop.security.authentication").equals("kerberos")) {
+            throw new IllegalArgumentException("hadoop.security.authentication must be kerberos");
+        }
+
+        String zookeeperSaslClientConfig =
+                properties.getOrDefault(
+                        ZOOKEEPER_SASL_CLIENT_CONFIG, DEFAULT_ZOOKEEPER_SASL_CLIENT_CONFIG);
+        String zookeeperServerPrincipal = properties.get(ZOOKEEPER_SERVER_PRINCIPAL);
+        String zookeeperNamespace = properties.get(ZOOKEEPER_NAMESPACE);
+        // Use global lock to avoid multiple threads to execute setConfiguration at the same time
+        synchronized (UserGroupInformation.class) {
+            System.setProperty("java.security.krb5.conf", krb5FilePath);
+            // init configuration
+            if (StringUtils.isNotBlank(zookeeperNamespace)) {
+                LoginUtil.setJaasConf(
+                        zookeeperSaslClientConfig, kerberosPrincipal, kerberosKeytabPath);
+                LoginUtil.setZookeeperServerPrincipal(zookeeperServerPrincipal);
+            }
             UserGroupInformation.setConfiguration(configuration);
             UserGroupInformation userGroupInformation =
                     UserGroupInformation.loginUserFromKeytabAndReturnUGI(

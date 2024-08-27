@@ -65,19 +65,6 @@ public abstract class BaseHdfsFileSource extends BaseFileSource {
                             pluginConfig.getString(HdfsSourceConfigOptions.DEFAULT_FS.key()));
         }
         if (pluginConfig.hasPath(HdfsSourceConfigOptions.HDFS_SITE_PATH.key())) {
-        readStrategy =
-                ReadStrategyFactory.of(
-                        pluginConfig.getString(HdfsSourceConfig.FILE_FORMAT_TYPE.key()));
-        readStrategy.setPluginConfig(pluginConfig);
-        String path = pluginConfig.getString(HdfsSourceConfig.FILE_PATH.key());
-        hadoopConf = new HadoopConf(pluginConfig.getString(HdfsSourceConfig.DEFAULT_FS.key()));
-        if (pluginConfig.hasPath(BaseSinkConfig.HADOOP_USER_NAME.key())) {
-            hadoopConf.setHadoopUserName(
-                    pluginConfig.getString(BaseSinkConfig.HADOOP_USER_NAME.key()));
-        } else {
-            hadoopConf.setHadoopUserName(BaseSinkConfig.HADOOP_USER_NAME.defaultValue());
-        }
-        if (pluginConfig.hasPath(HdfsSourceConfig.HDFS_SITE_PATH.key())) {
             hadoopConf.setHdfsSitePath(
                     pluginConfig.getString(HdfsSourceConfigOptions.HDFS_SITE_PATH.key()));
         }
@@ -87,11 +74,11 @@ public abstract class BaseHdfsFileSource extends BaseFileSource {
                     pluginConfig.getString(HdfsSourceConfigOptions.REMOTE_USER.key()));
         }
 
-        if (pluginConfig.hasPath(HdfsSourceConfigOptions.KERBEROS_PRINCIPAL.key())) {
-        if (pluginConfig.hasPath(BaseSinkConfig.CORE_SITE_PATH.key())) {
-            hadoopConf.setCoreSitePath(pluginConfig.getString(BaseSinkConfig.CORE_SITE_PATH.key()));
+        if (pluginConfig.hasPath(HdfsSourceConfigOptions.CORE_SITE_PATH.key())) {
+            hadoopConf.setCoreSitePath(
+                    pluginConfig.getString(HdfsSourceConfigOptions.CORE_SITE_PATH.key()));
         }
-        if (pluginConfig.hasPath(HdfsSourceConfig.KERBEROS_PRINCIPAL.key())) {
+        if (pluginConfig.hasPath(HdfsSourceConfigOptions.KERBEROS_PRINCIPAL.key())) {
             hadoopConf.setKerberosPrincipal(
                     pluginConfig.getString(HdfsSourceConfigOptions.KERBEROS_PRINCIPAL.key()));
         }
