@@ -59,6 +59,7 @@ public class HiveMetaStoreProxy {
         String hiveSitePath = readonlyConfig.get(HiveConfig.HIVE_SITE_PATH);
         HiveConf hiveConf = new HiveConf();
         hiveConf.set("hive.metastore.uris", metastoreUri);
+        ，
         try {
             if (StringUtils.isNotBlank(hiveHadoopConfigPath)) {
                 HADOOP_CONF_FILES.forEach(
@@ -78,6 +79,10 @@ public class HiveMetaStoreProxy {
             }
 
             if (StringUtils.isNotBlank(hiveSitePath)) {
+                hiveConf.addResource(new File(hiveSitePath).toURI().toURL());
+            }
+            if (config.hasPath(BaseSinkConfig.CORE_SITE_PATH.key())) {
+                String hiveSitePath = config.getString(BaseSinkConfig.CORE_SITE_PATH.key());
                 hiveConf.addResource(new File(hiveSitePath).toURI().toURL());
             }
 

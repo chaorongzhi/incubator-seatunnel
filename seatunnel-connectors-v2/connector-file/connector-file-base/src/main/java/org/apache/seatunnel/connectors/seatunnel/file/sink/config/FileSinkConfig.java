@@ -179,7 +179,12 @@ public class FileSinkConfig extends BaseFileSinkConfig implements PartitionConfi
                 new HashMap<>(seaTunnelRowTypeInfo.getFieldNames().length);
         String[] fieldNames = seaTunnelRowTypeInfo.getFieldNames();
         for (int i = 0; i < fieldNames.length; i++) {
-            columnsMap.put(fieldNames[i].toLowerCase(), i);
+            String fieldName = fieldNames[i];
+            if (fieldName.contains(".")) {
+                columnsMap.put(fieldName.split("\\.")[1].toLowerCase(), i);
+            } else {
+                columnsMap.put(fieldName.toLowerCase(), i);
+            }
         }
 
         // init sink column index and partition field index, we will use the column index to found

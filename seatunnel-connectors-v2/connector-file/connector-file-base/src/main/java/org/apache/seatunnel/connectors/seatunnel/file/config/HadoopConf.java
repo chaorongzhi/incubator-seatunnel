@@ -39,6 +39,7 @@ public class HadoopConf implements Serializable {
     protected Map<String, String> extraOptions = new HashMap<>();
     protected String hdfsNameKey;
     protected String hdfsSitePath;
+    protected String coreSitePath;
 
     protected String remoteUser;
 
@@ -68,6 +69,9 @@ public class HadoopConf implements Serializable {
             hdfsSiteConfiguration.addResource(new Path(hdfsSitePath));
             unsetUnwantedOverwritingProps(hdfsSiteConfiguration);
             configuration.addResource(hdfsSiteConfiguration);
+        }
+        if (coreSitePath != null) {
+            configuration.addResource(new Path(coreSitePath));
         }
     }
 

@@ -70,7 +70,7 @@ public class HiveJdbcConnectionProvider extends SimpleJdbcConnectionProvider {
             configuration.set("hadoop.security.authentication", "kerberos");
             return HadoopLoginFactory.loginWithKerberos(
                     configuration,
-                    jdbcConfig.krb5Path,
+                    jdbcConfig.krb5Path,，
                     jdbcConfig.kerberosPrincipal,
                     jdbcConfig.kerberosKeytabPath,
                     (conf, userGroupInformation) -> hiveConnectionProduceFunction.produce());

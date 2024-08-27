@@ -35,7 +35,7 @@ public interface SaveModeHandler extends AutoCloseable {
     Catalog getHandleCatalog();
 
     default void handleSaveMode() {
-        handleSchemaSaveMode();
-        handleDataSaveMode();
+        //        handleSchemaSaveMode();
+        //        handleDataSaveMode();
     }
 }

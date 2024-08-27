@@ -222,6 +222,12 @@ public class BaseSinkConfig {
                     .noDefaultValue()
                     .withDescription("The path of hdfs-site.xml");
 
+    public static final Option<String> CORE_SITE_PATH =
+            Options.key("core_site_path")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription("The path of core-site.xml");
+
     public static final Option<String> REMOTE_USER =
             Options.key("remote_user")
                     .stringType()

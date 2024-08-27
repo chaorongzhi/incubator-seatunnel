@@ -29,20 +29,28 @@ import org.apache.seatunnel.engine.common.Constant;
 import org.apache.seatunnel.engine.common.env.EnvironmentUtil;
 import org.apache.seatunnel.engine.common.env.Version;
 import org.apache.seatunnel.engine.core.classloader.ClassLoaderService;
+import org.apache.seatunnel.engine.common.exception.SeaTunnelEngineException;
+import org.apache.seatunnel.engine.common.loader.SeaTunnelChildFirstClassLoader;
+import org.apache.seatunnel.engine.common.utils.PassiveCompletableFuture;
 import org.apache.seatunnel.engine.core.dag.logical.LogicalDag;
 import org.apache.seatunnel.engine.core.job.JobDAGInfo;
 import org.apache.seatunnel.engine.core.job.JobImmutableInformation;
 import org.apache.seatunnel.engine.core.job.JobInfo;
 import org.apache.seatunnel.engine.core.job.JobStatus;
+import org.apache.seatunnel.engine.server.CoordinatorService;
 import org.apache.seatunnel.engine.server.SeaTunnelServer;
 import org.apache.seatunnel.engine.server.log.Log4j2HttpGetCommandProcessor;
 import org.apache.seatunnel.engine.server.master.JobHistoryService.JobState;
+import org.apache.seatunnel.engine.server.master.JobHistoryService;
 import org.apache.seatunnel.engine.server.operation.GetClusterHealthMetricsOperation;
 import org.apache.seatunnel.engine.server.operation.GetJobMetricsOperation;
 import org.apache.seatunnel.engine.server.operation.GetJobStatusOperation;
 import org.apache.seatunnel.engine.server.resourcemanager.opeartion.GetOverviewOperation;
 import org.apache.seatunnel.engine.server.resourcemanager.resource.OverviewInfo;
 import org.apache.seatunnel.engine.server.utils.NodeEngineUtil;
+import org.apache.seatunnel.engine.server.utils.RestUtil;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.hazelcast.cluster.Address;
 import com.hazelcast.cluster.Cluster;
@@ -64,6 +72,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Spliterators;
 import java.util.concurrent.ExecutionException;
@@ -74,6 +83,8 @@ import static com.hazelcast.internal.ascii.rest.HttpStatusCode.SC_500;
 import static org.apache.seatunnel.engine.server.rest.RestConstant.FINISHED_JOBS_INFO;
 import static org.apache.seatunnel.engine.server.rest.RestConstant.JOB_INFO_URL;
 import static org.apache.seatunnel.engine.server.rest.RestConstant.OVERVIEW;
+import static org.apache.seatunnel.engine.server.rest.RestConstant.CANCEL_JOB_URL;
+import static org.apache.seatunnel.engine.server.rest.RestConstant.GET_JOB_STATUS_URL;
 import static org.apache.seatunnel.engine.server.rest.RestConstant.RUNNING_JOBS_URL;
 import static org.apache.seatunnel.engine.server.rest.RestConstant.RUNNING_JOB_URL;
 import static org.apache.seatunnel.engine.server.rest.RestConstant.RUNNING_THREADS;
@@ -117,6 +128,10 @@ public class RestHttpGetCommandProcessor extends HttpCommandProcessor<HttpGetCom
                 getRunningThread(httpGetCommand);
             } else if (uri.startsWith(OVERVIEW)) {
                 overView(httpGetCommand, uri);
+            } else if (uri.startsWith(CANCEL_JOB_URL)) {
+                cancelJobById(httpGetCommand, uri);
+            } else if (uri.startsWith(GET_JOB_STATUS_URL)) {
+                getJobDetailStateById(httpGetCommand, uri);
             } else {
                 original.handle(httpGetCommand);
             }
@@ -367,6 +382,61 @@ public class RestHttpGetCommandProcessor extends HttpCommandProcessor<HttpGetCom
                         .collect(JsonArray::new, JsonArray::add, JsonArray::add));
     }
 
+    private void cancelJobById(HttpGetCommand command, String uri) {
+        uri = StringUtil.stripTrailingSlash(uri);
+        Map<String, String> requestParams = new HashMap<>();
+        RestUtil.buildRequestParams(requestParams, uri);
+        long jobId = Long.parseLong(requestParams.get("jobId"));
+        boolean isStopWithSavePoint =
+                Boolean.parseBoolean(requestParams.get("isStopWithSavePoint"));
+        CoordinatorService coordinatorService = getSeaTunnelServer().getCoordinatorService();
+        PassiveCompletableFuture<Void> voidPassiveCompletableFuture = null;
+        if (isStopWithSavePoint) {
+            voidPassiveCompletableFuture = coordinatorService.savePoint(jobId);
+        } else {
+            voidPassiveCompletableFuture = coordinatorService.cancelJob(jobId);
+        }
+        voidPassiveCompletableFuture.join();
+        Map<String, String> rst = new HashMap<>();
+        rst.put("msg", "success");
+        prepareResponse(command, JsonUtil.toJsonObject(rst));
+    }
+
+    private void getJobDetailStateById(HttpGetCommand command, String uri) {
+        JsonObject respInfo = new JsonObject();
+        JsonObject jobDetailInfo = new JsonObject();
+        uri = StringUtil.stripTrailingSlash(uri);
+        Map<String, String> requestParams = new HashMap<>();
+        RestUtil.buildRequestParams(requestParams, uri);
+        if (StringUtils.isBlank(requestParams.get("jobId")))
+            throw new SeaTunnelEngineException("jobId is empty");
+        long jobId = Long.parseLong(requestParams.get("jobId"));
+        JobHistoryService.JobState jobDetailState =
+                getSeaTunnelServer()
+                        .getCoordinatorService()
+                        .getJobHistoryService()
+                        .getJobDetailState(jobId);
+        if (Objects.isNull(jobDetailState))
+            throw new SeaTunnelEngineException(String.format("job(%s) does not exist", jobId));
+        String jobMetrics =
+                getSeaTunnelServer().getCoordinatorService().getJobMetrics(jobId).toJsonString();
+        jobDetailInfo.add("jobId", jobId);
+        jobDetailInfo.add("jobName", jobDetailState.getJobName());
+        jobDetailInfo.add("jobStatus", jobDetailState.getJobStatus().name());
+        jobDetailInfo.add("submitTime", jobDetailState.getSubmitTime());
+        jobDetailInfo.add(
+                "finishTime",
+                (jobDetailState.getFinishTime() == null) ? 0L : jobDetailState.getFinishTime());
+        jobDetailInfo.add("errorMessage", jobDetailState.getErrorMessage());
+        jobDetailInfo.add("jobMetrics", JsonUtil.toJsonObject(getJobMetrics(jobMetrics)));
+        respInfo.add("status", "success");
+        respInfo.add("message", "successful get job detail state");
+        respInfo.add("data", jobDetailInfo);
+        prepareResponse(command, respInfo);
+    }
+
+    private Map<String, Long> getJobMetrics(String jobMetrics) {
+        Map<String, Long> metricsMap = new HashMap<>();
     private Map<String, Object> getJobMetrics(String jobMetrics) {
         Map<String, Object> metricsMap = new HashMap<>();
         long sourceReadCount = 0L;

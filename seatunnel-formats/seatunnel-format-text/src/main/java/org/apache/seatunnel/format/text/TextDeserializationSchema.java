@@ -203,7 +203,7 @@ public class TextDeserializationSchema implements DeserializationSchema<SeaTunne
 
     private Object convert(
             String field, SeaTunnelDataType<?> fieldType, int level, String fieldName) {
-        if (StringUtils.isBlank(field)) {
+        if (StringUtils.isBlank(field) || "\\N".equals(field)) {
             return null;
         }
         switch (fieldType.getSqlType()) {

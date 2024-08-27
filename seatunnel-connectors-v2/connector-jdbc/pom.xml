@@ -35,7 +35,7 @@
         <dm-jdbc.version>8.1.2.141</dm-jdbc.version>
         <sqlserver.version>9.2.1.jre8</sqlserver.version>
         <phoenix.version>5.2.5-HBase-2.x</phoenix.version>
-        <oracle.version>12.2.0.1</oracle.version>
+        <oracle.version>18.3.0.0</oracle.version>
         <sqlite.version>3.39.3.0</sqlite.version>
         <db2.version>db2jcc4</db2.version>
         <sqlite.version>3.39.3.0</sqlite.version>
@@ -48,8 +48,9 @@
         <hikari.version>4.0.3</hikari.version>
         <postgis.jdbc.version>2.5.1</postgis.jdbc.version>
         <kingbase8.version>8.6.0</kingbase8.version>
-        <hive.jdbc.version>3.1.3</hive.jdbc.version>
+        <hive.jdbc.version>3.1.0</hive.jdbc.version>
         <oceanbase.jdbc.version>2.4.3</oceanbase.jdbc.version>
+        <clickhouse.jdbc.version>0.2.6</clickhouse.jdbc.version>
         <xugu.jdbc.version>12.2.0</xugu.jdbc.version>
         <iris.jdbc.version>3.0.0</iris.jdbc.version>
     </properties>
@@ -182,6 +183,10 @@
                         <groupId>jdk.tools</groupId>
                         <artifactId>jdk.tools</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -202,10 +207,32 @@
                 <version>${iris.jdbc.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>ru.yandex.clickhouse</groupId>
+                <artifactId>clickhouse-jdbc</artifactId>
+                <version>${clickhouse.jdbc.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-auth</artifactId>
+                <version>3.1.1-mrs-2.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-auth</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.seatunnel</groupId>
             <artifactId>connector-common</artifactId>
@@ -349,4 +376,17 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>huaweicloudsdk</id>
+            <url>https://mirrors.huaweicloud.com/repository/maven/huaweicloudsdk/</url>
+        </repository>
+    </repositories>
 </project>

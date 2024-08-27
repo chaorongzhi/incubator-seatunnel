@@ -84,6 +84,28 @@ public abstract class AbstractReadStrategy implements ReadStrategy {
                 mergePartitionTypes(fileNames.get(0), seaTunnelRowType);
     }
 
+    @Override
+    public Configuration getConfiguration(HadoopConf hadoopConf) {
+        Configuration configuration = new Configuration();
+        configuration.setBoolean(READ_INT96_AS_FIXED, true);
+        configuration.setBoolean(WRITE_FIXED_AS_INT96, true);
+        configuration.setBoolean(ADD_LIST_ELEMENT_RECORDS, false);
+        configuration.setBoolean(WRITE_OLD_LIST_STRUCTURE, true);
+        configuration.set(CommonConfigurationKeys.FS_DEFAULT_NAME_KEY, hadoopConf.getHdfsNameKey());
+        configuration.set(
+            String.format("fs.%s.impl", hadoopConf.getSchema()), hadoopConf.getFsHdfsImpl());
+        hadoopConf.setExtraOptionsForConfiguration(configuration);
+        String principal = hadoopConf.getKerberosPrincipal();
+        String keytabPath = hadoopConf.getKerberosKeytabPath();
+        String krb5Path = hadoopConf.getKrb5Path();
+        if (!isKerberosAuthorization) {
+            FileSystemUtils.doKerberosAuthentication(
+                configuration, principal, keytabPath, krb5Path);
+            isKerberosAuthorization = true;
+        }
+        return configuration;
+    }
+
     boolean checkFileType(String path) {
         return true;
     }

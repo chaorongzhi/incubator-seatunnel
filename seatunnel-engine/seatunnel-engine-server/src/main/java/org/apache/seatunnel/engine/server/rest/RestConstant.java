@@ -51,7 +51,9 @@ public class RestConstant {
     public static final String JOB_INFO_URL = "/hazelcast/rest/maps/job-info";
     public static final String FINISHED_JOBS_INFO = "/hazelcast/rest/maps/finished-jobs";
     public static final String SUBMIT_JOB_URL = "/hazelcast/rest/maps/submit-job";
+    public static final String CANCEL_JOB_URL = "/hazelcast/rest/maps/cancel-job";
     public static final String ENCRYPT_CONFIG = "/hazelcast/rest/maps/encrypt-config";
+    public static final String GET_JOB_STATUS_URL = "/hazelcast/rest/maps/get-job-status";
 
     // only for test use
     public static final String RUNNING_THREADS = "/hazelcast/rest/maps/running-threads";

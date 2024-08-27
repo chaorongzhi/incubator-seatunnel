@@ -41,4 +41,5 @@ public class DatabaseIdentifier {
     public static final String XUGU = "XUGU";
     public static final String IRIS = "IRIS";
     public static final String INCEPTOR = "Inceptor";
+    public static final String CLICKHOUSE = "Clickhouse";
 }

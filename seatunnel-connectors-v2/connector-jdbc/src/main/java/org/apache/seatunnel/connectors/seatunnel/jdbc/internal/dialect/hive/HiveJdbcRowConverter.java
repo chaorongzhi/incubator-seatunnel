@@ -33,11 +33,11 @@ public class HiveJdbcRowConverter extends AbstractJdbcRowConverter {
         return DatabaseIdentifier.HIVE;
     }
 
-    @Override
-    public PreparedStatement toExternal(
-            TableSchema tableSchema, SeaTunnelRow row, PreparedStatement statement) {
-        throw new JdbcConnectorException(
-                JdbcConnectorErrorCode.DONT_SUPPORT_SINK,
-                "The Hive jdbc connector don't support sink");
-    }
+    //    @Override
+    //    public PreparedStatement toExternal(
+    //            SeaTunnelRowType rowType, SeaTunnelRow row, PreparedStatement statement) {
+    //        throw new JdbcConnectorException(
+    //                JdbcConnectorErrorCode.DONT_SUPPORT_SINK,
+    //                "The Hive jdbc connector don't support sink");
+    //    }
 }
