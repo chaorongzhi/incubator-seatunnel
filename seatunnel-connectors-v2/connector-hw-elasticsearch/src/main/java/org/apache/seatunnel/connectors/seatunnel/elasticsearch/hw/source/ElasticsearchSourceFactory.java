@@ -19,40 +19,64 @@ package org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.source;
 
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.api.source.SeaTunnelSource;
+import org.apache.seatunnel.api.source.SourceSplit;
 import org.apache.seatunnel.api.table.catalog.schema.TableSchemaOptions;
+import org.apache.seatunnel.api.table.connector.TableSource;
 import org.apache.seatunnel.api.table.factory.Factory;
 import org.apache.seatunnel.api.table.factory.TableSourceFactory;
-import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig;
-import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SourceConfig;
+import org.apache.seatunnel.api.table.factory.TableSourceFactoryContext;
 
 import com.google.auto.service.AutoService;
+
+import java.io.Serializable;
+
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.HOSTS;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.PASSWORD;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.TLS_KEY_STORE_PASSWORD;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.TLS_KEY_STORE_PATH;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.TLS_TRUST_STORE_PASSWORD;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.TLS_TRUST_STORE_PATH;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.TLS_VERIFY_CERTIFICATE;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.TLS_VERIFY_HOSTNAME;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.USERNAME;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SourceConfig.INDEX;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SourceConfig.QUERY;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SourceConfig.SCROLL_SIZE;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SourceConfig.SCROLL_TIME;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SourceConfig.SOURCE;
 
 @AutoService(Factory.class)
 public class ElasticsearchSourceFactory implements TableSourceFactory {
     @Override
     public String factoryIdentifier() {
-        return "HwElasticsearch";
+        return "Elasticsearch";
     }
 
     @Override
     public OptionRule optionRule() {
         return OptionRule.builder()
-                .required(EsClusterConnectionConfig.HOSTS, SourceConfig.INDEX)
+                .required(HOSTS, INDEX)
                 .optional(
-                        EsClusterConnectionConfig.USERNAME,
-                        EsClusterConnectionConfig.PASSWORD,
-                        SourceConfig.SCROLL_TIME,
-                        SourceConfig.SCROLL_SIZE,
-                        SourceConfig.QUERY,
-                        EsClusterConnectionConfig.TLS_VERIFY_CERTIFICATE,
-                        EsClusterConnectionConfig.TLS_VERIFY_HOSTNAME,
-                        EsClusterConnectionConfig.TLS_KEY_STORE_PATH,
-                        EsClusterConnectionConfig.TLS_KEY_STORE_PASSWORD,
-                        EsClusterConnectionConfig.TLS_TRUST_STORE_PATH,
-                        EsClusterConnectionConfig.TLS_TRUST_STORE_PASSWORD,
-                        EsClusterConnectionConfig.HW_ES_AUTH_CONFIG)
-                .exclusive(SourceConfig.SOURCE, TableSchemaOptions.SCHEMA)
+                        USERNAME,
+                        PASSWORD,
+                        SCROLL_TIME,
+                        SCROLL_SIZE,
+                        QUERY,
+                        TLS_VERIFY_CERTIFICATE,
+                        TLS_VERIFY_HOSTNAME,
+                        TLS_KEY_STORE_PATH,
+                        TLS_KEY_STORE_PASSWORD,
+                        TLS_TRUST_STORE_PATH,
+                        TLS_TRUST_STORE_PASSWORD)
+                .exclusive(SOURCE, TableSchemaOptions.SCHEMA)
                 .build();
+    }
+
+    @Override
+    public <T, SplitT extends SourceSplit, StateT extends Serializable>
+            TableSource<T, SplitT, StateT> createSource(TableSourceFactoryContext context) {
+        return () ->
+                (SeaTunnelSource<T, SplitT, StateT>) new ElasticsearchSource(context.getOptions());
     }
 
     @Override

@@ -22,6 +22,10 @@ import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.dto.Elasticsea
 import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.serialize.type.impl.NotIndexTypeSerializer;
 import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.serialize.type.impl.RequiredIndexTypeSerializer;
 
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.constant.ElasticsearchVersion.ES2;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.constant.ElasticsearchVersion.ES5;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.constant.ElasticsearchVersion.ES6;
+
 public class IndexTypeSerializerFactory {
 
     private static final String DEFAULT_TYPE = "st";
@@ -35,14 +39,13 @@ public class IndexTypeSerializerFactory {
         }
         ElasticsearchVersion elasticsearchVersion =
                 elasticsearchClusterInfo.getElasticsearchVersion();
-        if (elasticsearchVersion == ElasticsearchVersion.ES2
-                || elasticsearchVersion == ElasticsearchVersion.ES5) {
+        if (elasticsearchVersion == ES2 || elasticsearchVersion == ES5) {
             if (type == null || "".equals(type)) {
                 type = DEFAULT_TYPE;
             }
             return new RequiredIndexTypeSerializer(type);
         }
-        if (elasticsearchVersion == ElasticsearchVersion.ES6) {
+        if (elasticsearchVersion == ES6) {
             if (type != null && !"".equals(type)) {
                 return new RequiredIndexTypeSerializer(type);
             }

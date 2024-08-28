@@ -17,8 +17,7 @@
 
 package org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.source;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-
+import org.apache.seatunnel.api.configuration.ReadonlyConfig;
 import org.apache.seatunnel.api.source.Collector;
 import org.apache.seatunnel.api.source.SourceReader;
 import org.apache.seatunnel.api.table.type.SeaTunnelRow;
@@ -43,9 +42,9 @@ import java.util.Map;
 public class ElasticsearchSourceReader
         implements SourceReader<SeaTunnelRow, ElasticsearchSourceSplit> {
 
-    SourceReader.Context context;
+    Context context;
 
-    private Config pluginConfig;
+    private final ReadonlyConfig config;
 
     private EsRestClient esRestClient;
 
@@ -57,15 +56,15 @@ public class ElasticsearchSourceReader
     private final long pollNextWaitTime = 1000L;
 
     public ElasticsearchSourceReader(
-            SourceReader.Context context, Config pluginConfig, SeaTunnelRowType rowTypeInfo) {
+            Context context, ReadonlyConfig config, SeaTunnelRowType rowTypeInfo) {
         this.context = context;
-        this.pluginConfig = pluginConfig;
+        this.config = config;
         this.deserializer = new DefaultSeaTunnelRowDeserializer(rowTypeInfo);
     }
 
     @Override
     public void open() {
-        esRestClient = EsRestClient.createInstance(this.pluginConfig);
+        esRestClient = EsRestClient.createInstance(this.config);
     }
 
     @Override

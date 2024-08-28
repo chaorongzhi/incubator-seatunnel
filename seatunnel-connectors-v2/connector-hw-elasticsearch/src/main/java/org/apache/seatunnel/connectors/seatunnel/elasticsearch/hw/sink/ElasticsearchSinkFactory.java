@@ -17,40 +17,73 @@
 
 package org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.sink;
 
+import org.apache.seatunnel.api.configuration.ReadonlyConfig;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
+import org.apache.seatunnel.api.table.catalog.CatalogTable;
+import org.apache.seatunnel.api.table.catalog.TableIdentifier;
+import org.apache.seatunnel.api.table.connector.TableSink;
 import org.apache.seatunnel.api.table.factory.Factory;
 import org.apache.seatunnel.api.table.factory.TableSinkFactory;
-import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig;
+import org.apache.seatunnel.api.table.factory.TableSinkFactoryContext;
 import org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SinkConfig;
 
 import com.google.auto.service.AutoService;
+
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.HOSTS;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.PASSWORD;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.TLS_KEY_STORE_PASSWORD;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.TLS_KEY_STORE_PATH;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.TLS_TRUST_STORE_PASSWORD;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.TLS_TRUST_STORE_PATH;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.TLS_VERIFY_CERTIFICATE;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.TLS_VERIFY_HOSTNAME;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.EsClusterConnectionConfig.USERNAME;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SinkConfig.INDEX;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SinkConfig.INDEX_TYPE;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SinkConfig.KEY_DELIMITER;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SinkConfig.MAX_BATCH_SIZE;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SinkConfig.MAX_RETRY_COUNT;
+import static org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config.SinkConfig.PRIMARY_KEYS;
 
 @AutoService(Factory.class)
 public class ElasticsearchSinkFactory implements TableSinkFactory {
     @Override
     public String factoryIdentifier() {
-        return "HwElasticsearch";
+        return "Elasticsearch";
     }
 
     @Override
     public OptionRule optionRule() {
         return OptionRule.builder()
-                .required(EsClusterConnectionConfig.HOSTS, SinkConfig.INDEX)
+                .required(HOSTS, INDEX, SinkConfig.SCHEMA_SAVE_MODE, SinkConfig.DATA_SAVE_MODE)
                 .optional(
-                        SinkConfig.INDEX_TYPE,
-                        SinkConfig.PRIMARY_KEYS,
-                        SinkConfig.KEY_DELIMITER,
-                        EsClusterConnectionConfig.USERNAME,
-                        EsClusterConnectionConfig.PASSWORD,
-                        SinkConfig.MAX_RETRY_COUNT,
-                        SinkConfig.MAX_BATCH_SIZE,
-                        EsClusterConnectionConfig.TLS_VERIFY_CERTIFICATE,
-                        EsClusterConnectionConfig.TLS_VERIFY_HOSTNAME,
-                        EsClusterConnectionConfig.TLS_KEY_STORE_PATH,
-                        EsClusterConnectionConfig.TLS_KEY_STORE_PASSWORD,
-                        EsClusterConnectionConfig.TLS_TRUST_STORE_PATH,
-                        EsClusterConnectionConfig.TLS_TRUST_STORE_PASSWORD,
-                        EsClusterConnectionConfig.HW_ES_AUTH_CONFIG)
+                        INDEX_TYPE,
+                        PRIMARY_KEYS,
+                        KEY_DELIMITER,
+                        USERNAME,
+                        PASSWORD,
+                        MAX_RETRY_COUNT,
+                        MAX_BATCH_SIZE,
+                        TLS_VERIFY_CERTIFICATE,
+                        TLS_VERIFY_HOSTNAME,
+                        TLS_KEY_STORE_PATH,
+                        TLS_KEY_STORE_PASSWORD,
+                        TLS_TRUST_STORE_PATH,
+                        TLS_TRUST_STORE_PASSWORD)
                 .build();
+    }
+
+    @Override
+    public TableSink createSink(TableSinkFactoryContext context) {
+        ReadonlyConfig readonlyConfig = context.getOptions();
+        String original = readonlyConfig.get(INDEX);
+        CatalogTable newTable =
+                CatalogTable.of(
+                        TableIdentifier.of(
+                                context.getCatalogTable().getCatalogName(),
+                                context.getCatalogTable().getTablePath().getDatabaseName(),
+                                original),
+                        context.getCatalogTable());
+        return () -> new ElasticsearchSink(readonlyConfig, newTable);
     }
 }

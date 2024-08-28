@@ -42,7 +42,8 @@ public class KafkaSourceFactory implements TableSourceFactory {
     @Override
     public OptionRule optionRule() {
         return OptionRule.builder()
-                .required(Config.TOPIC, Config.BOOTSTRAP_SERVERS)
+                .required(Config.BOOTSTRAP_SERVERS)
+                .exclusive(Config.TOPIC, Config.TABLE_LIST)
                 .optional(
                         Config.START_MODE,
                         Config.PATTERN,
@@ -52,8 +53,7 @@ public class KafkaSourceFactory implements TableSourceFactory {
                         Config.SCHEMA,
                         Config.FORMAT,
                         Config.DEBEZIUM_RECORD_INCLUDE_SCHEMA,
-                        Config.KEY_PARTITION_DISCOVERY_INTERVAL_MILLIS,
-                        Config.KRB5_CONF_PATH)
+                        Config.KEY_PARTITION_DISCOVERY_INTERVAL_MILLIS)
                 .conditional(Config.START_MODE, StartMode.TIMESTAMP, Config.START_MODE_TIMESTAMP)
                 .conditional(
                         Config.START_MODE, StartMode.SPECIFIC_OFFSETS, Config.START_MODE_OFFSETS)

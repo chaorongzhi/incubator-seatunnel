@@ -17,6 +17,9 @@
 
 package org.apache.seatunnel.connectors.seatunnel.kafka.hw.source;
 
+import org.apache.seatunnel.api.serialization.DeserializationSchema;
+import org.apache.seatunnel.api.table.catalog.CatalogTable;
+import org.apache.seatunnel.api.table.type.SeaTunnelRow;
 import org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.StartMode;
 
 import org.apache.kafka.common.TopicPartition;
@@ -33,12 +36,12 @@ public class ConsumerMetadata implements Serializable {
 
     private String topic;
     private boolean isPattern = false;
-    private String bootstrapServers;
     private Properties properties;
     private String consumerGroup;
-    private boolean commitOnCheckpoint = false;
     private StartMode startMode = StartMode.GROUP_OFFSETS;
     private Map<TopicPartition, Long> specificStartOffsets;
     private Long startOffsetsTimestamp;
+    private DeserializationSchema<SeaTunnelRow> deserializationSchema;
+    private CatalogTable catalogTable;
     private String krb5Path;
 }

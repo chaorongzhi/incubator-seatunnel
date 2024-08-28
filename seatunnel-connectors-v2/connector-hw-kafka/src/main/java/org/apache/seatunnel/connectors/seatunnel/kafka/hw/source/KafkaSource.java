@@ -27,11 +27,11 @@ import org.apache.seatunnel.api.source.SupportParallelism;
 import org.apache.seatunnel.api.table.catalog.CatalogTable;
 import org.apache.seatunnel.api.table.type.SeaTunnelRow;
 import org.apache.seatunnel.common.constants.JobMode;
+import org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config;
 import org.apache.seatunnel.connectors.seatunnel.kafka.hw.state.KafkaSourceState;
 
-import com.google.common.collect.Lists;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class KafkaSource
         implements SeaTunnelSource<SeaTunnelRow, KafkaSourceSplit, KafkaSourceState>,
@@ -54,20 +54,21 @@ public class KafkaSource
 
     @Override
     public String getPluginName() {
-        return org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.Config.CONNECTOR_IDENTITY;
+        return Config.CONNECTOR_IDENTITY;
     }
 
     @Override
     public List<CatalogTable> getProducedCatalogTables() {
-        return Lists.newArrayList(kafkaSourceConfig.getCatalogTable());
+        return kafkaSourceConfig.getMapMetadata().values().stream()
+                .map(ConsumerMetadata::getCatalogTable)
+                .collect(Collectors.toList());
     }
 
     @Override
     public SourceReader<SeaTunnelRow, KafkaSourceSplit> createReader(
             SourceReader.Context readerContext) {
         return new KafkaSourceReader(
-                kafkaSourceConfig.getMetadata(),
-                kafkaSourceConfig.getDeserializationSchema(),
+                kafkaSourceConfig,
                 readerContext,
                 kafkaSourceConfig.getMessageFormatErrorHandleWay());
     }
@@ -75,10 +76,7 @@ public class KafkaSource
     @Override
     public SourceSplitEnumerator<KafkaSourceSplit, KafkaSourceState> createEnumerator(
             SourceSplitEnumerator.Context<KafkaSourceSplit> enumeratorContext) {
-        return new KafkaSourceSplitEnumerator(
-                kafkaSourceConfig.getMetadata(),
-                enumeratorContext,
-                kafkaSourceConfig.getDiscoveryIntervalMillis());
+        return new KafkaSourceSplitEnumerator(kafkaSourceConfig, enumeratorContext, null);
     }
 
     @Override
@@ -86,10 +84,7 @@ public class KafkaSource
             SourceSplitEnumerator.Context<KafkaSourceSplit> enumeratorContext,
             KafkaSourceState checkpointState) {
         return new KafkaSourceSplitEnumerator(
-                kafkaSourceConfig.getMetadata(),
-                enumeratorContext,
-                checkpointState,
-                kafkaSourceConfig.getDiscoveryIntervalMillis());
+                kafkaSourceConfig, enumeratorContext, checkpointState);
     }
 
     @Override

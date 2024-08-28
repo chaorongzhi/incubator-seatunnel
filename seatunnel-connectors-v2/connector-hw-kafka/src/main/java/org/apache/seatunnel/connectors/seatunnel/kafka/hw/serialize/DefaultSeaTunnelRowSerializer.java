@@ -24,12 +24,14 @@ import org.apache.seatunnel.api.table.type.SeaTunnelRowType;
 import org.apache.seatunnel.common.exception.CommonErrorCodeDeprecated;
 import org.apache.seatunnel.connectors.seatunnel.kafka.hw.config.MessageFormat;
 import org.apache.seatunnel.connectors.seatunnel.kafka.hw.exception.KafkaConnectorException;
+import org.apache.seatunnel.format.avro.AvroSerializationSchema;
 import org.apache.seatunnel.format.compatible.debezium.json.CompatibleDebeziumJsonDeserializationSchema;
 import org.apache.seatunnel.format.compatible.debezium.json.CompatibleDebeziumJsonSerializationSchema;
 import org.apache.seatunnel.format.json.JsonSerializationSchema;
 import org.apache.seatunnel.format.json.canal.CanalJsonSerializationSchema;
 import org.apache.seatunnel.format.json.debezium.DebeziumJsonSerializationSchema;
 import org.apache.seatunnel.format.json.exception.SeaTunnelJsonFormatException;
+import org.apache.seatunnel.format.json.maxwell.MaxWellJsonSerializationSchema;
 import org.apache.seatunnel.format.json.ogg.OggJsonSerializationSchema;
 import org.apache.seatunnel.format.text.TextSerializationSchema;
 
@@ -225,8 +227,12 @@ public class DefaultSeaTunnelRowSerializer implements SeaTunnelRowSerializer {
                 return new OggJsonSerializationSchema(rowType);
             case DEBEZIUM_JSON:
                 return new DebeziumJsonSerializationSchema(rowType);
+            case MAXWELL_JSON:
+                return new MaxWellJsonSerializationSchema(rowType);
             case COMPATIBLE_DEBEZIUM_JSON:
                 return new CompatibleDebeziumJsonSerializationSchema(rowType, isKey);
+            case AVRO:
+                return new AvroSerializationSchema(rowType);
             default:
                 throw new SeaTunnelJsonFormatException(
                         CommonErrorCodeDeprecated.UNSUPPORTED_DATA_TYPE,

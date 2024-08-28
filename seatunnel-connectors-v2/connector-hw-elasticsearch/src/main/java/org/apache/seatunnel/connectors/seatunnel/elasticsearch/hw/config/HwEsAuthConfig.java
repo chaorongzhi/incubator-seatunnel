@@ -1,6 +1,6 @@
 package org.apache.seatunnel.connectors.seatunnel.elasticsearch.hw.config;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
+import java.util.Map;
 
 /**
  * Description Copyright © 启明星辰 版权所有
@@ -33,39 +33,39 @@ public class HwEsAuthConfig {
     private static final String KRB5_PATH = "krb5Path";
     private static final String KEYTAB = "keytab";
 
-    public HwEsAuthConfig(Config config) {
-        if (config.hasPath(CONNECT_TIMEOUT)) {
-            this.connectTimeout = config.getInt(CONNECT_TIMEOUT);
+    public HwEsAuthConfig(Map<String, String> config) {
+        if (config.containsKey(CONNECT_TIMEOUT)) {
+            this.connectTimeout = Integer.parseInt(config.get(CONNECT_TIMEOUT));
         }
-        if (config.hasPath(SOCKET_TIMOUT)) {
-            this.socketTimeout = config.getInt(SOCKET_TIMOUT);
+        if (config.containsKey(SOCKET_TIMOUT)) {
+            this.socketTimeout = Integer.parseInt(config.get(SOCKET_TIMOUT));
         }
-        if (config.hasPath(CONNECTION_REQUEST_TIMOUT)) {
-            this.connectionRequestTimeout = config.getInt(CONNECTION_REQUEST_TIMOUT);
+        if (config.containsKey(CONNECTION_REQUEST_TIMOUT)) {
+            this.connectionRequestTimeout = Integer.parseInt(config.get(CONNECTION_REQUEST_TIMOUT));
         }
-        if (config.hasPath(MAX_CONN_PER_ROUTE)) {
-            this.maxConnPerRoute = config.getInt(MAX_CONN_PER_ROUTE);
+        if (config.containsKey(MAX_CONN_PER_ROUTE)) {
+            this.maxConnPerRoute = Integer.parseInt(config.get(MAX_CONN_PER_ROUTE));
         }
-        if (config.hasPath(MAX_CONN_TOTAL)) {
-            this.maxConnTotal = config.getInt(MAX_CONN_TOTAL);
+        if (config.containsKey(MAX_CONN_TOTAL)) {
+            this.maxConnTotal = Integer.parseInt(config.get(MAX_CONN_TOTAL));
         }
-        if (config.hasPath(IS_SECURE_MODE)) {
-            this.isSecureMode = config.getString(IS_SECURE_MODE);
+        if (config.containsKey(IS_SECURE_MODE)) {
+            this.isSecureMode = config.get(IS_SECURE_MODE);
         }
-        if (config.hasPath(PRINCIPAL)) {
-            this.principal = config.getString(PRINCIPAL);
+        if (config.containsKey(PRINCIPAL)) {
+            this.principal = config.get(PRINCIPAL);
         }
-        if (config.hasPath(SNIFFER_ENABLE)) {
-            this.snifferEnable = config.getString(SNIFFER_ENABLE);
+        if (config.containsKey(SNIFFER_ENABLE)) {
+            this.snifferEnable = config.get(SNIFFER_ENABLE);
         }
-        if (config.hasPath(CUSTOM_JASS_PATH)) {
-            this.customJaasPath = config.getString(CUSTOM_JASS_PATH);
+        if (config.containsKey(CUSTOM_JASS_PATH)) {
+            this.customJaasPath = config.get(CUSTOM_JASS_PATH);
         }
-        if (config.hasPath(KRB5_PATH)) {
-            this.krb5Path = config.getString(KRB5_PATH);
+        if (config.containsKey(KRB5_PATH)) {
+            this.krb5Path = config.get(KRB5_PATH);
         }
-        if (config.hasPath(KEYTAB)) {
-            this.keytab = config.getString(KEYTAB);
+        if (config.containsKey(KEYTAB)) {
+            this.keytab = config.get(KEYTAB);
         }
     }
 
