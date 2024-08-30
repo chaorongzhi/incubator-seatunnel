@@ -135,6 +135,11 @@ public class OrcReadStrategy extends AbstractReadStrategy {
                         }
                     }
                     SeaTunnelRow seaTunnelRow = new SeaTunnelRow(fields);
+
+                    if (this.dataCarryFilename) {
+                        seaTunnelRow = dataCarryFilename(seaTunnelRow, path);
+                    }
+
                     seaTunnelRow.setTableId(tableId);
                     output.collect(seaTunnelRow);
                     num++;

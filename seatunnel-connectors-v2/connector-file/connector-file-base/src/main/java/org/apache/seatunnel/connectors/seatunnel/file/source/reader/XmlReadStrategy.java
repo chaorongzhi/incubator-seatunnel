@@ -128,25 +128,26 @@ public class XmlReadStrategy extends AbstractReadStrategy {
 
                             if (CollectionUtils.isEmpty(fields)) return;
 
-                            fields.forEach(
-                                    field -> {
-                                        int fieldIndex =
-                                                ArrayUtils.indexOf(
-                                                        seaTunnelRowType.getFieldNames(),
-                                                        field.getName());
-                                        seaTunnelRow.setField(
-                                                fieldIndex,
-                                                convert(
-                                                        field.getText(),
-                                                        seaTunnelRowType
-                                                                .getFieldTypes()[fieldIndex]));
-                                    });
+                            for (Node field : fields) {
+                                int fieldIndex =
+                                        ArrayUtils.indexOf(
+                                                seaTunnelRowType.getFieldNames(), field.getName());
+                                seaTunnelRow.setField(
+                                        fieldIndex,
+                                        convert(
+                                                field.getText(),
+                                                seaTunnelRowType.getFieldTypes()[fieldIndex]));
+                            }
 
                             if (isMergePartition) {
                                 int partitionIndex = seaTunnelRowType.getTotalFields();
                                 for (String value : partitionsMap.values()) {
                                     seaTunnelRow.setField(partitionIndex++, value);
                                 }
+                            }
+
+                            if (this.dataCarryFilename) {
+                                seaTunnelRow = dataCarryFilename(seaTunnelRow, path);
                             }
 
                             seaTunnelRow.setTableId(tableId);

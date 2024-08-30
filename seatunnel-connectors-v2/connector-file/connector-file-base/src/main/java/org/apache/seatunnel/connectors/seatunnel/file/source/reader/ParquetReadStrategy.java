@@ -124,6 +124,11 @@ public class ParquetReadStrategy extends AbstractReadStrategy {
                     fields[i] = resolveObject(data, seaTunnelRowType.getFieldType(i));
                 }
                 SeaTunnelRow seaTunnelRow = new SeaTunnelRow(fields);
+
+                if (this.dataCarryFilename) {
+                    seaTunnelRow = dataCarryFilename(seaTunnelRow, path);
+                }
+
                 seaTunnelRow.setTableId(tableId);
                 output.collect(seaTunnelRow);
             }

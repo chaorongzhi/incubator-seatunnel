@@ -107,6 +107,10 @@ public class JsonReadStrategy extends AbstractReadStrategy {
                                             seaTunnelRow.setField(index++, value);
                                         }
                                     }
+
+                                    if (this.dataCarryFilename) {
+                                        seaTunnelRow = dataCarryFilename(seaTunnelRow, path);
+                                    }
                                     seaTunnelRow.setTableId(tableId);
                                     output.collect(seaTunnelRow);
                                 } catch (IOException e) {

@@ -21,6 +21,7 @@ import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
 import org.apache.seatunnel.api.table.type.BasicType;
 import org.apache.seatunnel.api.table.type.SeaTunnelDataType;
+import org.apache.seatunnel.api.table.type.SeaTunnelRow;
 import org.apache.seatunnel.api.table.type.SeaTunnelRowType;
 import org.apache.seatunnel.connectors.seatunnel.file.config.BaseSourceConfigOptions;
 import org.apache.seatunnel.connectors.seatunnel.file.config.HadoopConf;
@@ -70,6 +71,8 @@ public abstract class AbstractReadStrategy implements ReadStrategy {
     protected HadoopFileSystemProxy hadoopFileSystemProxy;
 
     protected Pattern pattern;
+
+    protected boolean dataCarryFilename = false;
 
     @Override
     public void init(HadoopConf conf) {
@@ -146,6 +149,10 @@ public abstract class AbstractReadStrategy implements ReadStrategy {
                     pluginConfig.getString(BaseSourceConfigOptions.FILE_FILTER_PATTERN.key());
             this.pattern = Pattern.compile(Matcher.quoteReplacement(filterPattern));
         }
+        if (pluginConfig.hasPath(BaseSourceConfigOptions.DATA_CARRY_FILENAME.key())) {
+            this.dataCarryFilename =
+                    pluginConfig.getBoolean(BaseSourceConfigOptions.DATA_CARRY_FILENAME.key());
+        }
     }
 
     @Override
@@ -210,5 +217,17 @@ public abstract class AbstractReadStrategy implements ReadStrategy {
             }
         } catch (Exception ignore) {
         }
+    }
+
+    protected SeaTunnelRow dataCarryFilename(SeaTunnelRow seaTunnelRow, String path) {
+        Object[] fields = seaTunnelRow.getFields();
+        Object[] newFields = new Object[fields.length];
+        String[] splitPath = path.split("/");
+        newFields[0] = splitPath[splitPath.length - 1];
+        System.arraycopy(fields, 0, newFields, 1, fields.length - 1);
+        SeaTunnelRow newSeaTunnelRow = new SeaTunnelRow(newFields);
+        newSeaTunnelRow.setRowKind(seaTunnelRow.getRowKind());
+        newSeaTunnelRow.setTableId(seaTunnelRow.getTableId());
+        return newSeaTunnelRow;
     }
 }

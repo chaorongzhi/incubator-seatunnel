@@ -176,4 +176,11 @@ public class BaseSourceConfigOptions {
                     .noDefaultValue()
                     .withDescription(
                             "Local file source configs, used to create multiple local file source.");
+
+    public static final Option<Boolean> DATA_CARRY_FILENAME =
+            Options.key("data_carry_filename")
+                    .booleanType()
+                    .defaultValue(false)
+                    .withDescription(
+                            "Specifies whether to carry the corresponding file name in each piece of data.");
 }
