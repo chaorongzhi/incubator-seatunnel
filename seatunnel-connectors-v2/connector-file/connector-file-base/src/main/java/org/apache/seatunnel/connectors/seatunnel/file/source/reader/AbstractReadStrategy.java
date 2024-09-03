@@ -222,8 +222,12 @@ public abstract class AbstractReadStrategy implements ReadStrategy {
     protected SeaTunnelRow dataCarryFilename(SeaTunnelRow seaTunnelRow, String path) {
         Object[] fields = seaTunnelRow.getFields();
         Object[] newFields = new Object[fields.length];
+        if (fields.length > 0 && fields[0] != null) {
+            System.arraycopy(fields, 0, newFields, 1, fields.length - 1);
+        } else {
+            System.arraycopy(fields, 1, newFields, 1, fields.length - 1);
+        }
         newFields[0] = path;
-        System.arraycopy(fields, 0, newFields, 1, fields.length - 1);
         SeaTunnelRow newSeaTunnelRow = new SeaTunnelRow(newFields);
         newSeaTunnelRow.setRowKind(seaTunnelRow.getRowKind());
         newSeaTunnelRow.setTableId(seaTunnelRow.getTableId());
