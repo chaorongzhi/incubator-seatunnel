@@ -227,7 +227,17 @@ public abstract class AbstractReadStrategy implements ReadStrategy {
         } else {
             System.arraycopy(fields, 1, newFields, 1, fields.length - 1);
         }
-        newFields[0] = path;
+        String oriPath = pluginConfig.getString(BaseSourceConfigOptions.FILE_PATH.key());
+        String[] split = path.split(oriPath.replace("\\", "/"));
+        String filePath = oriPath;
+        if (split.length > 1) {
+            if (oriPath.endsWith("/")) {
+                filePath = oriPath + split[1];
+            } else {
+                filePath = oriPath + "/" + split[1];
+            }
+        }
+        newFields[0] = filePath;
         SeaTunnelRow newSeaTunnelRow = new SeaTunnelRow(newFields);
         newSeaTunnelRow.setRowKind(seaTunnelRow.getRowKind());
         newSeaTunnelRow.setTableId(seaTunnelRow.getTableId());
