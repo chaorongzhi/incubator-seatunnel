@@ -85,20 +85,9 @@
             <properties>
                 <mysql.version>8.0.27</mysql.version>
                 <postgresql.version>42.4.3</postgresql.version>
-                <postgis.jdbc.version>2.5.1</postgis.jdbc.version>
-                <dm-jdbc.version>8.1.2.141</dm-jdbc.version>
-                <sqlserver.version>9.2.1.jre8</sqlserver.version>
-                <phoenix.version>5.2.5-HBase-2.x</phoenix.version>
                 <oracle.version>18.3.0.0</oracle.version>
-                <sqlite.version>3.39.3.0</sqlite.version>
-                <db2.version>db2jcc4</db2.version>
-                <sqlite.version>3.39.3.0</sqlite.version>
-                <tablestore.version>5.13.9</tablestore.version>
-                <saphana.version>2.14.7</saphana.version>
-                <teradata.version>17.20.00.12</teradata.version>
-                <redshift.version>2.1.0.9</redshift.version>
-                <snowflake.version>3.13.29</snowflake.version>
                 <hive.version>3.1.0</hive.version>
+                <clickhouse.version>0.2.6</clickhouse.version>
 
                 <!-- Imap storage dependency package  -->
                 <hadoop-aliyun.version>3.1.4</hadoop-aliyun.version>
@@ -126,13 +115,12 @@
                     <version>${project.version}</version>
                     <scope>provided</scope>
                 </dependency>
-                <!-- connectors -->
-                <!--                <dependency>-->
-                <!--                    <groupId>org.apache.seatunnel</groupId>-->
-                <!--                    <artifactId>connector-kafka</artifactId>-->
-                <!--                    <version>${project.version}</version>-->
-                <!--                    <scope>provided</scope>-->
-                <!--                </dependency>-->
+                <dependency>
+                    <groupId>org.apache.seatunnel</groupId>
+                    <artifactId>connector-clickhouse</artifactId>
+                    <version>${project.version}</version>
+                    <scope>provided</scope>
+                </dependency>
                 <dependency>
                     <groupId>org.apache.seatunnel</groupId>
                     <artifactId>connector-jdbc</artifactId>
@@ -145,12 +133,12 @@
                     <version>${project.version}</version>
                     <scope>provided</scope>
                 </dependency>
-                <!--                <dependency>-->
-                <!--                    <groupId>org.apache.seatunnel</groupId>-->
-                <!--                    <artifactId>connector-kafka</artifactId>-->
-                <!--                    <version>${project.version}</version>-->
-                <!--                    <scope>provided</scope>-->
-                <!--                </dependency>-->
+                <dependency>
+                    <groupId>org.apache.seatunnel</groupId>
+                    <artifactId>connector-kafka</artifactId>
+                    <version>${project.version}</version>
+                    <scope>provided</scope>
+                </dependency>
                 <dependency>
                     <groupId>org.apache.seatunnel</groupId>
                     <artifactId>connector-hw-kafka</artifactId>
@@ -183,61 +171,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-file-oss</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-file-jindo-oss</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-file-cos</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
                     <artifactId>connector-file-ftp</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-file-sftp</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-hudi</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-dingtalk</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-web3j</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-kudu</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-email</artifactId>
                     <version>${project.version}</version>
                     <scope>provided</scope>
                 </dependency>
@@ -249,43 +183,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-iotdb</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-neo4j</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
                     <artifactId>connector-redis</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-google-sheets</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-google-firestore</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-datahub</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-sentry</artifactId>
                     <version>${project.version}</version>
                     <scope>provided</scope>
                 </dependency>
@@ -297,97 +195,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-iceberg</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-influxdb</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-cassandra</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-file-s3</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-amazondynamodb</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-starrocks</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-tablestore</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
                     <artifactId>connector-doris</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-slack</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-http-gitlab</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-http-github</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-http-jira</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-rabbitmq</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-openmldb</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-doris</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-maxcompute</artifactId>
                     <version>${project.version}</version>
                     <scope>provided</scope>
                 </dependency>
@@ -397,104 +205,8 @@
                     <version>${project.version}</version>
                     <scope>provided</scope>
                 </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-cdc-oracle</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-cdc-mongodb</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-cdc-sqlserver</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-cdc-postgres</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-tdengine</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-selectdb-cloud</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-hbase</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-s3-redshift</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-rocketmq</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-file-obs</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-paimon</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-amazonsqs</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-easysearch</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>connector-milvus</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
 
                 <!-- jdbc driver -->
-                <dependency>
-                    <groupId>com.aliyun.phoenix</groupId>
-                    <artifactId>ali-phoenix-shaded-thin-client</artifactId>
-                    <version>${phoenix.version}</version>
-                    <scope>provided</scope>
-                </dependency>
                 <dependency>
                     <groupId>mysql</groupId>
                     <artifactId>mysql-connector-java</artifactId>
@@ -508,39 +220,22 @@
                     <scope>provided</scope>
                 </dependency>
                 <dependency>
-                    <groupId>net.postgis</groupId>
-                    <artifactId>postgis-jdbc</artifactId>
-                    <version>${postgis.jdbc.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.dameng</groupId>
-                    <artifactId>DmJdbcDriver18</artifactId>
-                    <version>${dm-jdbc.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.sap.cloud.db.jdbc</groupId>
-                    <artifactId>ngdbc</artifactId>
-                    <version>${saphana.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.microsoft.sqlserver</groupId>
-                    <artifactId>mssql-jdbc</artifactId>
-                    <version>${sqlserver.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
                     <groupId>com.oracle.database.jdbc</groupId>
                     <artifactId>ojdbc8</artifactId>
                     <version>${oracle.version}</version>
                     <scope>provided</scope>
                 </dependency>
+                <!--                <dependency>-->
+                <!--                    <groupId>org.apache.hive</groupId>-->
+                <!--                    <artifactId>hive-jdbc</artifactId>-->
+                <!--                    <version>${hive.jdbc.version}</version>-->
+                <!--                    <scope>provided</scope>-->
+                <!--                </dependency>-->
                 <dependency>
-                    <groupId>org.apache.hive</groupId>
-                    <artifactId>hive-jdbc</artifactId>
-                    <version>3.1.0</version>
+                    <groupId>ru.yandex.clickhouse</groupId>
+                    <artifactId>clickhouse-jdbc</artifactId>
+                    <version>${clickhouse.version}</version>
+                    <scope>provided</scope>
                 </dependency>
 
                 <!-- jdbc driver end -->
@@ -553,36 +248,6 @@
                 </dependency>
 
                 <!-- hadoop jar -->
-                <dependency>
-                    <groupId>org.apache.hadoop</groupId>
-                    <artifactId>hadoop-aws</artifactId>
-                    <version>${hadoop-aws.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.amazonaws</groupId>
-                    <artifactId>aws-java-sdk-bundle</artifactId>
-                    <version>${aws-java-sdk.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.hadoop</groupId>
-                    <artifactId>hadoop-aliyun</artifactId>
-                    <version>${hadoop-aliyun.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.aliyun.oss</groupId>
-                    <artifactId>aliyun-sdk-oss</artifactId>
-                    <version>${aliyun.sdk.oss.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jdom</groupId>
-                    <artifactId>jdom</artifactId>
-                    <version>${jdom.version}</version>
-                    <scope>provided</scope>
-                </dependency>
                 <dependency>
                     <groupId>org.apache.seatunnel</groupId>
                     <artifactId>seatunnel-hadoop3-3.1.4-uber</artifactId>
