@@ -41,9 +41,9 @@ import org.apache.seatunnel.connectors.seatunnel.clickhouse.util.TypeConvertUtil
 
 import com.clickhouse.client.ClickHouseClient;
 import com.clickhouse.client.ClickHouseException;
-import com.clickhouse.client.ClickHouseFormat;
 import com.clickhouse.client.ClickHouseNode;
 import com.clickhouse.client.ClickHouseResponse;
+import com.clickhouse.data.ClickHouseFormat;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 

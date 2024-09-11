@@ -24,10 +24,10 @@ import org.apache.seatunnel.api.table.type.SeaTunnelRowType;
 import org.apache.seatunnel.connectors.seatunnel.clickhouse.util.TypeConvertUtil;
 
 import com.clickhouse.client.ClickHouseClient;
-import com.clickhouse.client.ClickHouseFormat;
 import com.clickhouse.client.ClickHouseNode;
 import com.clickhouse.client.ClickHouseRequest;
 import com.clickhouse.client.ClickHouseResponse;
+import com.clickhouse.data.ClickHouseFormat;
 
 import java.io.IOException;
 import java.util.ArrayList;

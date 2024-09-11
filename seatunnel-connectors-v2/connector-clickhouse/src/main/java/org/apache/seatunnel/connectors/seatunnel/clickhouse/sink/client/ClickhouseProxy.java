@@ -27,11 +27,11 @@ import org.apache.seatunnel.connectors.seatunnel.clickhouse.sink.file.Clickhouse
 
 import com.clickhouse.client.ClickHouseClient;
 import com.clickhouse.client.ClickHouseException;
-import com.clickhouse.client.ClickHouseFormat;
 import com.clickhouse.client.ClickHouseNode;
-import com.clickhouse.client.ClickHouseRecord;
 import com.clickhouse.client.ClickHouseRequest;
 import com.clickhouse.client.ClickHouseResponse;
+import com.clickhouse.data.ClickHouseFormat;
+import com.clickhouse.data.ClickHouseRecord;
 
 import java.util.ArrayList;
 import java.util.Arrays;
