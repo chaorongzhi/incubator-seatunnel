@@ -220,13 +220,20 @@ public abstract class AbstractReadStrategy implements ReadStrategy {
     }
 
     protected SeaTunnelRow dataCarryFilename(SeaTunnelRow seaTunnelRow, String path) {
-        Object[] fields = seaTunnelRow.getFields();
-        Object[] newFields = new Object[fields.length];
-        if (fields.length > 0 && fields[0] != null) {
-            System.arraycopy(fields, 0, newFields, 1, fields.length - 1);
+        SeaTunnelRowType seaTunnelRowTypeInfo = getActualSeaTunnelRowTypeInfo();
+        String[] fieldNames = seaTunnelRowTypeInfo.getFieldNames();
+        Object[] newFields = new Object[fieldNames.length];
+        if (null == seaTunnelRow) {
+            Arrays.fill(newFields, "");
         } else {
-            System.arraycopy(fields, 1, newFields, 1, fields.length - 1);
+            Object[] fields = seaTunnelRow.getFields();
+            if (fields.length > 0 && fields[0] != null) {
+                System.arraycopy(fields, 0, newFields, 1, fields.length - 1);
+            } else {
+                System.arraycopy(fields, 1, newFields, 1, fields.length - 1);
+            }
         }
+
         String oriPath = pluginConfig.getString(BaseSourceConfigOptions.FILE_PATH.key());
         String[] split = path.split(oriPath.replace("\\", "/"));
         String filePath = oriPath;
@@ -239,8 +246,7 @@ public abstract class AbstractReadStrategy implements ReadStrategy {
         }
         newFields[0] = filePath;
         SeaTunnelRow newSeaTunnelRow = new SeaTunnelRow(newFields);
-        newSeaTunnelRow.setRowKind(seaTunnelRow.getRowKind());
-        newSeaTunnelRow.setTableId(seaTunnelRow.getTableId());
+        newSeaTunnelRow.setTableId(seaTunnelRow == null ? "" : seaTunnelRow.getTableId());
         return newSeaTunnelRow;
     }
 }
