@@ -149,7 +149,16 @@ public class KafkaSinkWriter implements SinkWriter<SeaTunnelRow, KafkaCommitInfo
     private Properties getKafkaProperties(ReadonlyConfig pluginConfig) {
         Properties kafkaProperties = new Properties();
         if (pluginConfig.get(KAFKA_CONFIG) != null) {
-            pluginConfig.get(KAFKA_CONFIG).forEach((key, value) -> kafkaProperties.put(key, value));
+            pluginConfig
+                    .get(KAFKA_CONFIG)
+                    .forEach(
+                            (key, value) -> {
+                                if ("java.security.krb5.conf".equals(key)) {
+                                    System.setProperty("java.security.krb5.conf", value);
+                                } else {
+                                    kafkaProperties.put(key, value);
+                                }
+                            });
         }
 
         if (pluginConfig.get(ASSIGN_PARTITIONS) != null) {

@@ -162,14 +162,20 @@ public class TextDeserializationSchema implements DeserializationSchema<SeaTunne
         String content = new String(message, EncodingUtils.tryParseCharset(encoding));
         Map<Integer, String> splitsMap = splitLineBySeaTunnelRowType(content, seaTunnelRowType, 0);
         Object[] objects = new Object[seaTunnelRowType.getTotalFields()];
-        for (int i = 0; i < objects.length; i++) {
-            objects[i] =
-                    convert(
-                            splitsMap.get(i),
-                            seaTunnelRowType.getFieldType(i),
-                            0,
-                            seaTunnelRowType.getFieldNames()[i]);
+        if (objects.length != 1) {
+            for (int i = 0; i < objects.length; i++) {
+                objects[i] =
+                        convert(
+                                splitsMap.get(i),
+                                seaTunnelRowType.getFieldType(i),
+                                0,
+                                seaTunnelRowType.getFieldNames()[i]);
+            }
+        } else {
+            String separator = separators == null || separators.length == 0 ? "," : separators[0];
+            objects[0] = String.join(separator, splitsMap.values());
         }
+
         SeaTunnelRow seaTunnelRow = new SeaTunnelRow(objects);
         Optional<TablePath> tablePath =
                 Optional.ofNullable(catalogTable).map(CatalogTable::getTablePath);
