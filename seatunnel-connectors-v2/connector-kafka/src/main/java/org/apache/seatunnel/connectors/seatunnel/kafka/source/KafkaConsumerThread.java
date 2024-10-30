@@ -88,7 +88,7 @@ public class KafkaConsumerThread implements Runnable {
                     if ("java.security.krb5.conf".equals(key)) {
                         System.setProperty("java.security.krb5.conf", String.valueOf(value));
                     } else {
-                        props.put(key, value);
+                        props.setProperty(String.valueOf(key), String.valueOf(value));
                     }
                 });
 
