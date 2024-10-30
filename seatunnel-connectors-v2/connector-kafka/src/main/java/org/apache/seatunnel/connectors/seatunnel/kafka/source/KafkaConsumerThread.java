@@ -84,7 +84,14 @@ public class KafkaConsumerThread implements Runnable {
             boolean autoCommit) {
         Properties props = new Properties();
         properties.forEach(
-                (key, value) -> props.setProperty(String.valueOf(key), String.valueOf(value)));
+                (key, value) -> {
+                    if ("java.security.krb5.conf".equals(key)) {
+                        System.setProperty("java.security.krb5.conf", String.valueOf(value));
+                    } else {
+                        props.put(key, value);
+                    }
+                });
+
         props.setProperty(ConsumerConfig.GROUP_ID_CONFIG, consumerGroup);
         props.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         if (this.metadata.getProperties().get("client.id") == null) {
