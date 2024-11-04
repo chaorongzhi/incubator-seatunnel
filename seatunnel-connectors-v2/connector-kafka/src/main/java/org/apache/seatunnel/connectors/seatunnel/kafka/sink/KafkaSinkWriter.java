@@ -36,6 +36,9 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 
+import lombok.extern.slf4j.Slf4j;
+import sun.security.krb5.KrbException;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -56,6 +59,7 @@ import static org.apache.seatunnel.connectors.seatunnel.kafka.config.Config.TOPI
 import static org.apache.seatunnel.connectors.seatunnel.kafka.config.Config.TRANSACTION_PREFIX;
 
 /** KafkaSinkWriter is a sink writer that will write {@link SeaTunnelRow} to Kafka. */
+@Slf4j
 public class KafkaSinkWriter implements SinkWriter<SeaTunnelRow, KafkaCommitInfo, KafkaSinkState> {
 
     private final SinkWriter.Context context;
@@ -155,6 +159,11 @@ public class KafkaSinkWriter implements SinkWriter<SeaTunnelRow, KafkaCommitInfo
                             (key, value) -> {
                                 if ("java.security.krb5.conf".equals(key)) {
                                     System.setProperty("java.security.krb5.conf", value);
+                                    try {
+                                        sun.security.krb5.Config.refresh();
+                                    } catch (KrbException e) {
+                                        log.error(e.getMessage(), e);
+                                    }
                                 } else {
                                     kafkaProperties.put(key, value);
                                 }

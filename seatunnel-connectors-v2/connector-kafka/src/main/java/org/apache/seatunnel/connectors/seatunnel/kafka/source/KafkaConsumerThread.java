@@ -24,11 +24,15 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 
+import lombok.extern.slf4j.Slf4j;
+import sun.security.krb5.KrbException;
+
 import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+@Slf4j
 public class KafkaConsumerThread implements Runnable {
 
     private final KafkaConsumer<byte[], byte[]> consumer;
@@ -87,6 +91,11 @@ public class KafkaConsumerThread implements Runnable {
                 (key, value) -> {
                     if ("java.security.krb5.conf".equals(key)) {
                         System.setProperty("java.security.krb5.conf", String.valueOf(value));
+                        try {
+                            sun.security.krb5.Config.refresh();
+                        } catch (KrbException e) {
+                            log.error(e.getMessage(), e);
+                        }
                     } else {
                         props.setProperty(String.valueOf(key), String.valueOf(value));
                     }
