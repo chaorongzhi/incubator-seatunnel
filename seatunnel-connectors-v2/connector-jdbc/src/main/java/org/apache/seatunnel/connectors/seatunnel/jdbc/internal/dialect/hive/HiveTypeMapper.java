@@ -17,6 +17,8 @@
 
 package org.apache.seatunnel.connectors.seatunnel.jdbc.internal.dialect.hive;
 
+import org.apache.seatunnel.api.table.catalog.Column;
+import org.apache.seatunnel.api.table.converter.BasicTypeDefine;
 import org.apache.seatunnel.api.table.type.BasicType;
 import org.apache.seatunnel.api.table.type.DecimalType;
 import org.apache.seatunnel.api.table.type.LocalTimeType;
@@ -30,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 public class HiveTypeMapper implements JdbcDialectTypeMapper {
 
@@ -113,5 +116,35 @@ public class HiveTypeMapper implements JdbcDialectTypeMapper {
                 throw CommonError.convertToSeaTunnelTypeError(
                         DatabaseIdentifier.HIVE, columnType, jdbcColumnName);
         }
+    }
+
+    @Override
+    public Column mappingColumn(BasicTypeDefine typeDefine) {
+        return HiveTypeConverter.INSTANCE.convert(typeDefine);
+    }
+
+    @Override
+    public Column mappingColumn(ResultSetMetaData metadata, int colIndex) throws SQLException {
+        String columnName = metadata.getColumnLabel(colIndex);
+        String[] split = columnName.split("\\.");
+
+        columnName = String.join(".", Arrays.asList(split).subList(1, split.length));
+        // e.g. tinyint unsigned
+        String nativeType = metadata.getColumnTypeName(colIndex);
+        int isNullable = metadata.isNullable(colIndex);
+        int precision = metadata.getPrecision(colIndex);
+        int scale = metadata.getScale(colIndex);
+
+        BasicTypeDefine typeDefine =
+                BasicTypeDefine.builder()
+                        .name(columnName)
+                        .columnType(nativeType)
+                        .dataType(nativeType)
+                        .nullable(isNullable == ResultSetMetaData.columnNullable)
+                        .length((long) precision)
+                        .precision((long) precision)
+                        .scale(scale)
+                        .build();
+        return mappingColumn(typeDefine);
     }
 }

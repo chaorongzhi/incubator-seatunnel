@@ -34,4 +34,5 @@ public class HiveJdbcRowConverter extends AbstractJdbcRowConverter {
     //                JdbcConnectorErrorCode.DONT_SUPPORT_SINK,
     //                "The Hive jdbc connector don't support sink");
     //    }
+
 }
