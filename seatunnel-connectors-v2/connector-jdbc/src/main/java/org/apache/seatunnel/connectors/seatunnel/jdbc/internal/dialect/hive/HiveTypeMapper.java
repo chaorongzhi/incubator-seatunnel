@@ -128,7 +128,8 @@ public class HiveTypeMapper implements JdbcDialectTypeMapper {
         String columnName = metadata.getColumnLabel(colIndex);
         String[] split = columnName.split("\\.");
 
-        columnName = String.join(".", Arrays.asList(split).subList(1, split.length));
+        int startPos = split.length > 1 ? 1 : 0;
+        columnName = String.join(".", Arrays.asList(split).subList(startPos, split.length));
         // e.g. tinyint unsigned
         String nativeType = metadata.getColumnTypeName(colIndex);
         int isNullable = metadata.isNullable(colIndex);
